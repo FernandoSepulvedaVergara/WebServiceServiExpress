@@ -108,4 +108,10 @@ public class WebServiceEmpleado {
     {
         return controladorEmpleado.GetVentasEmpleado(filtro, valorFiltro);
     }
+    
+    @WebMethod (operationName = "Pagar")
+    public String[] Pagar(@WebParam(name = "id_venta")int id_venta, @WebParam(name = "montoPagado") int montoPagado)
+    {
+        return controladorEmpleado.Pagar(conexion.conexion.getConnection(),id_venta,montoPagado);
+    }
 }
