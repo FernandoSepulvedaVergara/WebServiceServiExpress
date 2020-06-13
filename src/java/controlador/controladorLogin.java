@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 public class controladorLogin {
     
-    public String[] ValidarUsuario(Connection cnx,String user, String pass)
+    public static String[] ValidarUsuario(Connection cnx,String user, String pass)
     {
         String sql = "select u.rut, u.nombre_de_usuario, u.contraseña, u.tipo_de_usuario_id_tipo_de_usuario from usuario u join tipo_de_usuario t on (u.tipo_de_usuario_id_tipo_de_usuario = t.id_tipo_de_usuario)"
                     +"where u.contraseña='"+pass+"' and u.nombre_de_usuario='"+user+"'";           
@@ -31,6 +31,37 @@ public class controladorLogin {
                 }
             }                          
         return data;  
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        return null;
+        }        
+    }    
+    
+     public static String[] ValidarUsuarioProveedor(Connection cnx,String user, String pass)
+    {
+        String sql = "select RUT_PROVEEDOR, \"RAZÓN_SOCIAL\", NOMBRE_DE_USUARIO, \"CONSTRASEÑA\" from proveedor "
+                    +"where NOMBRE_DE_USUARIO='"+user+"' and \"CONSTRASEÑA\" = '"+pass+"'";           
+        Statement st = null;
+        ResultSet rs = null;
+    
+        try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);
+            String[] resultado = new String[4];
+            while (rs.next()) {
+                
+                for (int i = 0; i < 4; i++) {
+                    
+                    if(rs.getString(i+1)!=null)
+                    {
+                    resultado[i] = rs.getString(i+1);
+                    }
+                    else{return null;}                    
+                }
+            }                          
+        return resultado;  
         }  
         catch (SQLException e) 
         {

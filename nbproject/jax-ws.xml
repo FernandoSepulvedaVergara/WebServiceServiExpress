@@ -13,6 +13,12 @@
     <service name="WebServiceEmpleado">
       <implementation-class>servicios.WebServiceEmpleado</implementation-class>
     </service>
+    <service name="WebServiceProveedor">
+      <implementation-class>servicios.WebServiceProveedor</implementation-class>
+    </service>
+    <service name="WebServiceAdministrador">
+      <implementation-class>servicios.WebServiceAdministrador</implementation-class>
+    </service>
   </services>
   <clients/>
 </jax-ws>

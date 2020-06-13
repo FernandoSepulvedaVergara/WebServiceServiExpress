@@ -520,17 +520,17 @@ public class controladorEmpleado {
     
     public static String[] Pagar(Connection cnx, int id_venta, int montoPagado)
     {
-        String[] resultado = new String[1];
+        String[] resultado = new String[2];
         try {
             PreparedStatement pst = cnx.prepareStatement("update ventas set estado_de_venta_id_estado_de_venta = 2, monto_pagado = " + montoPagado + " where id_venta= " + id_venta);
 
             pst.execute();
             resultado[0] = "True";
-            resultado[0] = "Actualizado con éxito";
+            resultado[1] = "Pagado con éxito";
         } catch (SQLException ex) {
             System.out.println("Error insert \n" + ex.getMessage());
             resultado[0] = "False";
-            resultado[0] = "No se pudo actualizar con éxito";
+            resultado[1] = "No se pudo actualizar con éxito";
         }
         return resultado;
     }
