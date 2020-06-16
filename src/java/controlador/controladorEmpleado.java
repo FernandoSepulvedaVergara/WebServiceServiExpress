@@ -6,6 +6,7 @@ import clases.EstadoDeAtencion;
 import clases.EstadoDeVenta;
 import clases.Producto;
 import clases.ProductoVendido;
+import clases.ReservaDeHora;
 import clases.TipoDeDocumento;
 import clases.TipoDeProducto;
 import clases.TipoDeServicio;
@@ -462,6 +463,16 @@ public class controladorEmpleado {
             
             ventas = GetVentas(conexion.getConnection(),ventas, sql, sqlCount);
         }
+        else if(filtro.equals("Patente"))
+        {
+            sql = "select e.ESTADO, v.ID_VENTA,r.PATENTE, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
+                + "where r.PATENTE = '"+valorFiltro+"'";
+            
+            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
+                     + "where r.PATENTE = '"+valorFiltro+"'";
+            
+            ventas = GetVentas(conexion.getConnection(),ventas, sql, sqlCount);
+        }
         else
         {
             return null;
@@ -500,12 +511,13 @@ public class controladorEmpleado {
                     estadoDeVenta.setEstado(rs.getString(1));
                 venta.setEstadoDeVenta(estadoDeVenta);
                 venta.setId_venta(rs.getInt(2));
-                venta.setMontoAPagar(rs.getInt(3));
-                venta.setMontoPagado(rs.getInt(4));
-                venta.setFecha(rs.getString(5));
-                venta.setRut(rs.getString(6));
-                venta.setIdAtencion(rs.getInt(7));
-                venta.setIdDocumento(rs.getInt(8));
+                venta.setPatente(rs.getString(3));
+                venta.setMontoAPagar(rs.getInt(4));
+                venta.setMontoPagado(rs.getInt(5));
+                venta.setFecha(rs.getString(6));
+                venta.setRut(rs.getString(7));
+                venta.setIdAtencion(rs.getInt(8));
+                venta.setIdDocumento(rs.getInt(9));
                 ventas[count] = venta;
                 count = count + 1;                
             }

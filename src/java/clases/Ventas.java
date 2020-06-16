@@ -9,6 +9,7 @@ public class Ventas {
     private String rut;
     private int idAtencion;
     private int idDocumento;
+    private String patente;
 
     public Ventas(int id_venta, int montoAPagar, int montoPagado, String fecha, EstadoDeVenta estadoDeVenta, String rut, int idAtencion, int idDocumento) {
         this.id_venta = id_venta;
@@ -29,6 +30,7 @@ public class Ventas {
         this.rut = null;
         this.idAtencion = 0;
         this.idDocumento = 0;
+        this.patente = null;
     }
 
     public int getIdDocumento() {
@@ -93,6 +95,14 @@ public class Ventas {
 
     public void setIdAtencion(int idAtencion) {
         this.idAtencion = idAtencion;
+    }
+
+    public String getPatente() {
+        return patente;
+    }
+
+    public void setPatente(String patente) {
+        this.patente = patente;
     }
     
     
