@@ -120,4 +120,10 @@ public class WebServiceCliente {
         Atenciones[] atenciones = null;
         return controlador.controladorCliente.GetAtenciones(conexion.getConnection(), rut,atenciones);
     }
+    
+    @WebMethod(operationName = "ValidarDisponibilidad")
+    public boolean[] ValidarDisponibilidad(@WebParam(name = "fecha") String fecha,@WebParam(name = "hora") String hora,@WebParam(name = "rut") String rut) 
+    {   
+        return controlador.controladorCliente.ValidarDisponibilidad(conexion.getConnection(), fecha, hora, rut);
+    }
 }
