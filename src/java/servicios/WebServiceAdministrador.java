@@ -3,6 +3,7 @@ package servicios;
 import clases.EstadoDePedido;
 import clases.OrdenDePedido;
 import clases.Pedido;
+import clases.Pedidos;
 import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
@@ -70,5 +71,17 @@ public class WebServiceAdministrador {
         pedido.setIdOrdenDePedido(idOrdenPedido);
         pedido.setIdProductoProveedor(idProductoProveedor);
         return controladorAdministrador.RegistrarPedido(conexion.conexion.getConnection(),pedido);
+    }
+    
+    @WebMethod(operationName = "GetOrdenDePedido")
+    public OrdenDePedido  GetOrdenDePedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+       
+        return controladorAdministrador.GetOrdenDePedido(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
+    @WebMethod(operationName = "GetPedidos")
+    public Pedidos[] GetPedidos(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+        
+        return controladorAdministrador.GetPedidos(conexion.conexion.getConnection(),idOrdenDePedido);
     }
 }

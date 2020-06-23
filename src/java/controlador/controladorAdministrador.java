@@ -3,6 +3,7 @@ package controlador;
 import clases.EstadoDePedido;
 import clases.OrdenDePedido;
 import clases.Pedido;
+import clases.Pedidos;
 import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
@@ -364,5 +365,83 @@ public class controladorAdministrador {
             resultado[1] = "Error al guardar pedido";
         }        
         return resultado;
+    }
+    
+    public static OrdenDePedido GetOrdenDePedido(Connection cnx, int idOrdenDePedido){
+        String sql = "select o.ID_ORDEN_PEDIDO, o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
+        Statement st = null;
+        ResultSet rs = null;
+        OrdenDePedido resultado = null;
+        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);       
+            
+            while(rs.next()){
+                OrdenDePedido ordenDePedido = new OrdenDePedido(); 
+                ordenDePedido.setIdOrdenPedido(rs.getInt(1));
+                ordenDePedido.setTotal(rs.getInt(2));
+                ordenDePedido.setUsuarioRut(rs.getString(3));
+                    EstadoDePedido estadoDePedido = new EstadoDePedido();
+                    estadoDePedido.setIdEstadoPedido(rs.getInt(4));
+                    estadoDePedido.setEstado(rs.getString(5));
+                ordenDePedido.setEstadoDePedido(estadoDePedido);
+                resultado = ordenDePedido;              
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }
+    
+    public static Pedidos[] GetPedidos(Connection cnx, int idOrdenDePedido){
+        String sql = "select pe.ID_PEDIDO, pe.CANTIDAD, p.PRECIO_DE_COMPRA,pe.TOTAL_A_PAGAR, p.ID_PRODUCTO,p.DESCRIPCION,p.MARCA,p.FECHA_DE_VENCIMIENTO from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO = pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
+        String sqlCount = "select count(*) from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO = pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+idOrdenDePedido;
+        Statement st = null;
+        ResultSet rs = null;
+        Pedidos[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Pedidos[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Pedidos pedido = new Pedidos();
+                pedido.setIdPedido(rs.getInt(1));
+                pedido.setCantidad(rs.getInt(2));
+                pedido.setPrecioCompra(rs.getInt(3));
+                pedido.setTotalAPagar(rs.getInt(4));
+                pedido.setIdProducto(rs.getInt(5));
+                pedido.setDescripcion(rs.getString(6));
+                pedido.setMarca(rs.getString(7));
+                pedido.setFechaDeVencimiento(rs.getString(8));
+                resultado[count] = pedido;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
     }
 }
