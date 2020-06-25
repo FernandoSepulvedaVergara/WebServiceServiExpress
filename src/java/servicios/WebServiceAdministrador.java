@@ -45,24 +45,31 @@ public class WebServiceAdministrador {
     public Proveedor[]  GetProveedores() {
         return controladorAdministrador.GetProveedores(conexion.conexion.getConnection());
     }
-    
+   
     @WebMethod(operationName = "GetOrdenesDePedido")
     public OrdenDePedido[]  GetOrdenesDePedido() {
         return controladorAdministrador.GetOrdenesDePedido(conexion.conexion.getConnection());
     }
     
+     @WebMethod(operationName = "GetOrdenDePedido")
+    public OrdenDePedido  GetOrdenDePedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+       
+        return controladorAdministrador.GetOrdenDePedido(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
     @WebMethod(operationName = "RegistrarOrdenDePedido")
-    public String[]  RegistrarOrdenDePedido(@WebParam(name = "total") int total,@WebParam(name = "usuarioRut") String usuarioRut,@WebParam(name = "idEstadoDePedido") int idEstadoDePedido) {
+    public String[]  RegistrarOrdenDePedido(@WebParam(name = "fechaDePedido") String fechaDePedido, @WebParam(name = "total") int total,@WebParam(name = "usuarioRut") String usuarioRut,@WebParam(name = "idEstadoDePedido") int idEstadoDePedido) {
         
         OrdenDePedido ordenDePedido = new OrdenDePedido();
             EstadoDePedido estadoDePedido = new EstadoDePedido();
             estadoDePedido.setIdEstadoPedido(idEstadoDePedido);
+        ordenDePedido.setFechaDePedido(fechaDePedido);
         ordenDePedido.setTotal(total);
         ordenDePedido.setUsuarioRut(usuarioRut);
         ordenDePedido.setEstadoDePedido(estadoDePedido);
         return controladorAdministrador.RegistrarOrdenDePedido(conexion.conexion.getConnection(),ordenDePedido);
     }
-    
+
      @WebMethod(operationName = "RegistrarPedido")
     public String[]  RegistrarPedido(@WebParam(name = "cantidad") int cantidad,@WebParam(name = "totalAPagar") int totalAPagar,@WebParam(name = "idOrdenPedido") int idOrdenPedido,@WebParam(name = "idProductoProveedor") int idProductoProveedor) {
        Pedido pedido = new Pedido();
@@ -73,15 +80,15 @@ public class WebServiceAdministrador {
         return controladorAdministrador.RegistrarPedido(conexion.conexion.getConnection(),pedido);
     }
     
-    @WebMethod(operationName = "GetOrdenDePedido")
-    public OrdenDePedido  GetOrdenDePedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
-       
-        return controladorAdministrador.GetOrdenDePedido(conexion.conexion.getConnection(),idOrdenDePedido);
-    }
-    
     @WebMethod(operationName = "GetPedidos")
     public Pedidos[] GetPedidos(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
         
         return controladorAdministrador.GetPedidos(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
+    @WebMethod(operationName = "ActualizarEstadoPedido")
+    public boolean ActualizarEstadoPedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido,@WebParam(name = "idEstado") int idEstado) {
+        
+        return controladorAdministrador.ActualizarEstadoPedido(conexion.conexion.getConnection(),idOrdenDePedido, idEstado);
     }
 }

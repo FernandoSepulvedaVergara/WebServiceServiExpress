@@ -270,7 +270,7 @@ public class controladorAdministrador {
     
     public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx)
     {
-        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.TOTAL, o.USUARIO_RUT from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
+        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.\"Fecha de pedido\",o.TOTAL, o.USUARIO_RUT from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
         String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)";
         Statement st = null;
         ResultSet rs = null;
@@ -302,8 +302,9 @@ public class controladorAdministrador {
                     estadoDePedido.setIdEstadoPedido(rs.getInt(2));
                     estadoDePedido.setEstado(rs.getString(3));
                 ordenDePedido.setEstadoDePedido(estadoDePedido);
-                ordenDePedido.setTotal(rs.getInt(4)); 
-                ordenDePedido.setUsuarioRut(rs.getString(5));
+                ordenDePedido.setFechaDePedido(rs.getString(4));
+                ordenDePedido.setTotal(rs.getInt(5)); 
+                ordenDePedido.setUsuarioRut(rs.getString(6));
                 resultado[count] = ordenDePedido;
                 count = count + 1;                
             }
@@ -325,14 +326,15 @@ public class controladorAdministrador {
     {
         String[] resultado = new String[3];
         try {        
-            CallableStatement cst = cnx.prepareCall("{call RegistrarOrdenDePedido(?,?,?,?)}");        
+            CallableStatement cst = cnx.prepareCall("{call RegistrarOrdenDePedido(?,?,?,?,?)}");        
             cst.setInt(1, ordenDePedido.getTotal());
-            cst.setString(2, ordenDePedido.getUsuarioRut());
-            cst.setInt(3, ordenDePedido.getEstadoDePedido().getIdEstadoPedido());   
-            cst.registerOutParameter(4, java.sql.Types.INTEGER);
+            cst.setString(2, ordenDePedido.getFechaDePedido());
+            cst.setString(3, ordenDePedido.getUsuarioRut());
+            cst.setInt(4, ordenDePedido.getEstadoDePedido().getIdEstadoPedido());   
+            cst.registerOutParameter(5, java.sql.Types.INTEGER);
             
             cst.execute();
-            String id_orden_de_pedido = Integer.toString(cst.getInt(4));
+            String id_orden_de_pedido = Integer.toString(cst.getInt(5));
             resultado[0] = "True";
             resultado[1] = "Guardado con éxito";
             resultado[2] = id_orden_de_pedido;
@@ -367,8 +369,21 @@ public class controladorAdministrador {
         return resultado;
     }
     
+    public static boolean ActualizarEstadoPedido(Connection cnx,int idPedido, int idEstado)
+    {
+        boolean resultado = false;
+        try {
+            PreparedStatement pst = cnx.prepareStatement("update ORDEN_DE_PEDIDO set ESTADO_DE_PEDIDO_ID_ESTADO = "+idEstado+" where ID_ORDEN_PEDIDO = "+idPedido);
+            pst.execute();
+            resultado = true;
+        } catch (SQLException ex) {
+            resultado = false;
+        }        
+        return resultado;
+    }
+    
     public static OrdenDePedido GetOrdenDePedido(Connection cnx, int idOrdenDePedido){
-        String sql = "select o.ID_ORDEN_PEDIDO, o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
+        String sql = "select o.ID_ORDEN_PEDIDO,o.\"Fecha de pedido\", o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
         Statement st = null;
         ResultSet rs = null;
         OrdenDePedido resultado = null;
@@ -380,11 +395,12 @@ public class controladorAdministrador {
             while(rs.next()){
                 OrdenDePedido ordenDePedido = new OrdenDePedido(); 
                 ordenDePedido.setIdOrdenPedido(rs.getInt(1));
-                ordenDePedido.setTotal(rs.getInt(2));
-                ordenDePedido.setUsuarioRut(rs.getString(3));
+                ordenDePedido.setFechaDePedido(rs.getString(2));
+                ordenDePedido.setTotal(rs.getInt(3));
+                ordenDePedido.setUsuarioRut(rs.getString(4));
                     EstadoDePedido estadoDePedido = new EstadoDePedido();
-                    estadoDePedido.setIdEstadoPedido(rs.getInt(4));
-                    estadoDePedido.setEstado(rs.getString(5));
+                    estadoDePedido.setIdEstadoPedido(rs.getInt(5));
+                    estadoDePedido.setEstado(rs.getString(6));
                 ordenDePedido.setEstadoDePedido(estadoDePedido);
                 resultado = ordenDePedido;              
             }
@@ -398,8 +414,8 @@ public class controladorAdministrador {
     }
     
     public static Pedidos[] GetPedidos(Connection cnx, int idOrdenDePedido){
-        String sql = "select pe.ID_PEDIDO, pe.CANTIDAD, p.PRECIO_DE_COMPRA,pe.TOTAL_A_PAGAR, p.ID_PRODUCTO,p.DESCRIPCION,p.MARCA,p.FECHA_DE_VENCIMIENTO from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO = pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
-        String sqlCount = "select count(*) from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO = pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+idOrdenDePedido;
+        String sql = "select pe.ID_PEDIDO, pe.CANTIDAD, p.PRECIO_DE_COMPRA,pe.TOTAL_A_PAGAR, p.ID_PRODUCTO,p.DESCRIPCION,p.MARCA,p.FECHA_DE_VENCIMIENTO from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO = p.ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO ="+ idOrdenDePedido; 
+        String sqlCount = "select count(*) from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO = p.ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+ idOrdenDePedido;
         Statement st = null;
         ResultSet rs = null;
         Pedidos[] resultado = null;

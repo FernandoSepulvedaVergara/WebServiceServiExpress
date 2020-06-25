@@ -4,12 +4,14 @@ public class OrdenDePedido {
     
     private int idOrdenPedido;
     private int total;
+    private String fechaDePedido;
     private String usuarioRut;
     private EstadoDePedido estadoDePedido;
 
-    public OrdenDePedido(int idOrdenPedido, int total, String usuarioRut, EstadoDePedido estadoDePedido) {
+    public OrdenDePedido(int idOrdenPedido, int total, String fechaDePedido, String usuarioRut, EstadoDePedido estadoDePedido) {
         this.idOrdenPedido = idOrdenPedido;
         this.total = total;
+        this.fechaDePedido = fechaDePedido;
         this.usuarioRut = usuarioRut;
         this.estadoDePedido = estadoDePedido;
     }
@@ -17,6 +19,7 @@ public class OrdenDePedido {
     public OrdenDePedido() {
         this.idOrdenPedido = 0;
         this.total = 0;
+        this.fechaDePedido = null;
         this.usuarioRut = null;
         this.estadoDePedido = null;
     }
@@ -35,6 +38,14 @@ public class OrdenDePedido {
 
     public void setTotal(int total) {
         this.total = total;
+    }    
+
+    public String getFechaDePedido() {
+        return fechaDePedido;
+    }
+
+    public void setFechaDePedido(String fechaDePedido) {
+        this.fechaDePedido = fechaDePedido;
     }
 
     public String getUsuarioRut() {
