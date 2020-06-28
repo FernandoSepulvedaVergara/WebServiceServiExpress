@@ -91,4 +91,10 @@ public class WebServiceAdministrador {
         
         return controladorAdministrador.ActualizarEstadoPedido(conexion.conexion.getConnection(),idOrdenDePedido, idEstado);
     }
+    
+    @WebMethod(operationName = "ActualizarProductosCancelarPedido")
+    public String[] ActualizarProductosCancelarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
+        
+        return controladorAdministrador.ActualizarProductosCancelarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
+    }
 }

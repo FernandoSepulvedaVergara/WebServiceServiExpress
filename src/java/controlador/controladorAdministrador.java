@@ -460,4 +460,26 @@ public class controladorAdministrador {
         }
     return resultado;
     }
+    
+    public static String[] ActualizarProductosCancelarPedido(Connection cnx, int idProductoProveedor, int cantidad)
+    {
+        String[] resultado = new String[3];
+        try {        
+            CallableStatement cst = cnx.prepareCall("{call ActualizarProductosCancelarPedido(?,?)}");        
+            cst.setInt(1, idProductoProveedor);    
+            cst.setInt(2, cantidad);  
+            cst.execute();
+            
+            resultado[0] = "True";
+            resultado[1] = "Guardado con éxito";
+            return resultado;
+        }   
+        catch (SQLException ex)        
+        {
+            resultado[0] = "False";
+            resultado[1] = "Error en actualizar cancelación de orden de pedido";
+            resultado[2] = ex.getMessage();
+            return resultado;
+        }
+    }
 }
