@@ -37,8 +37,8 @@ public class WebServiceAdministrador {
     }
     
     @WebMethod(operationName = "GetInfoProductoProveedor")
-    public ProductoProveedor GetInfoProductoProveedor(@WebParam(name = "idProductoProveedor") int idProductoProveedor) {
-        return controladorAdministrador.GetInfoProductoProveedor(conexion.conexion.getConnection(),idProductoProveedor);
+    public ProductoProveedor GetInfoProductoProveedor(@WebParam(name = "idProductoProveedor") int idProductoProveedor, @WebParam(name = "rutProveedor") String rutProveedor) {
+        return controladorAdministrador.GetInfoProductoProveedor(conexion.conexion.getConnection(),idProductoProveedor,rutProveedor);
     }
     
     @WebMethod(operationName = "GetProveedores")
@@ -96,5 +96,23 @@ public class WebServiceAdministrador {
     public String[] ActualizarProductosCancelarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
         
         return controladorAdministrador.ActualizarProductosCancelarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
+    }
+    
+    @WebMethod(operationName = "ActualizarProductosAprobarPedido")
+    public String[] ActualizarProductosAprobarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
+        
+        return controladorAdministrador.ActualizarProductosAprobarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
+    }
+    
+    @WebMethod(operationName = "ActualizarProductosEntregarPedido")
+    public String[] ActualizarProductosEntregarPedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+        
+        return controladorAdministrador.ActualizarProductosEntregarPedido(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
+    @WebMethod(operationName = "ActualizarEstadoProducto")
+    public boolean ActualizarEstadoProducto(@WebParam(name = "idProducto") int idProducto,@WebParam(name = "idEstado") int idEstado) {
+        
+        return controladorAdministrador.ActualizarEstadoProducto(conexion.conexion.getConnection(),idProducto,idEstado);
     }
 }

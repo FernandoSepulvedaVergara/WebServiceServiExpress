@@ -1,6 +1,7 @@
 package controlador;
 
 import clases.EstadoDePedido;
+import clases.EstadoDeProducto;
 import clases.OrdenDePedido;
 import clases.Pedido;
 import clases.Pedidos;
@@ -111,8 +112,8 @@ public class controladorAdministrador {
     }
     
      public static ProductoProveedor[] GetProductosProveedor(Connection cnx, int idTipoDeProducto, String rutProveedor){
-       String sql = "select * from PRODUCTOS_PROVEEDOR where TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO="+idTipoDeProducto+" and  PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'"; 
-        String sqlCount = "select count(*) from PRODUCTOS_PROVEEDOR where TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO="+idTipoDeProducto+" and  PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'";
+       String sql = "select * from PRODUCTOS_PROVEEDOR where TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO="+idTipoDeProducto+" and  PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'" + " and ESTADO_DE_PRODUCTO_ID_ESTADO = 1"; 
+        String sqlCount = "select count(*) from PRODUCTOS_PROVEEDOR where TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO="+idTipoDeProducto+" and  PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'" + " and ESTADO_DE_PRODUCTO_ID_ESTADO = 1";
         Statement st = null;
         ResultSet rs = null;
         ProductoProveedor[] resultado = null;
@@ -147,6 +148,9 @@ public class controladorAdministrador {
                 productoProveedor.setStock(rs.getInt(6)); 
                 productoProveedor.setIdTipoDeProducto(rs.getInt(7)); 
                 productoProveedor.setRutProveedor(rs.getString(8)); 
+                    EstadoDeProducto estadoDeProducto = new EstadoDeProducto();
+                    estadoDeProducto.setIdEstadoDeProducto(rs.getInt(9));
+                productoProveedor.setEstadoDeProducto(estadoDeProducto);
                 resultado[count] = productoProveedor;
                 count = count + 1;                
             }
@@ -159,8 +163,8 @@ public class controladorAdministrador {
     return resultado;
     }
     
-    public static Producto GetInfoProducto(Connection cnx, int IdProducto){
-    String sql = "select * from producto where ID_PRODUCTO = "+IdProducto; 
+    public static Producto GetInfoProducto(Connection cnx, int idProductoProveedor){
+    String sql = "select p.ID_PRODUCTO, p.\"DESCRIPCIÓN\", p.MARCA, p.FECHA_DE_VENCIMIENTO, p.PRECIO_DE_COMPRA, p.PRECIO_DE_VENTA, p.STOCK, p.\"STOCK_CRÍTICO\",p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO,p.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO,p.PROVEEDOR_RUT_PROVEEDOR, e.ID_ESTADO, e.ESTADO from producto p join ESTADO_DE_PRODUCTO e on (p.ESTADO_DE_PRODUCTO_ID_ESTADO = e.ID_ESTADO) where p.ID_PRODUCTO = "+idProductoProveedor; 
         Statement st = null;
         ResultSet rs = null;
         Producto resultado = null;
@@ -183,6 +187,10 @@ public class controladorAdministrador {
                 producto.setIdTipoDeProducto(rs.getInt(9)); 
                 producto.setIdOrdenDePedido(rs.getInt(10)); 
                 producto.setRutProveedor(rs.getString(11)); 
+                    EstadoDeProducto estadoDeProducto = new EstadoDeProducto();
+                    estadoDeProducto.setIdEstadoDeProducto(rs.getInt(12));
+                    estadoDeProducto.setEstado(rs.getString(13));
+                producto.setEstadoDeProducto(estadoDeProducto);
                 resultado = producto;
                 count = count + 1;                
             }
@@ -195,8 +203,8 @@ public class controladorAdministrador {
     return resultado;
     }
     
-     public static ProductoProveedor GetInfoProductoProveedor(Connection cnx, int IdProductoProveedor){
-        String sql = "select * from PRODUCTOS_PROVEEDOR where ID_PRODUCTO = "+IdProductoProveedor; 
+    public static ProductoProveedor GetInfoProductoProveedor(Connection cnx, int idProductoProveedor,String rutProveedor){
+    String sql = "select p.ID_PRODUCTO, p.\"DESCRIPCION\", p.MARCA, p.FECHA_DE_VENCIMIENTO, p.PRECIO_DE_COMPRA, p.STOCK,p.TIPO_DE_PRODUCTO_ID_TIPO_DE_PRODUCTO,p.PROVEEDOR_RUT_PROVEEDOR, e.ID_ESTADO, e.ESTADO from productos_proveedor p join ESTADO_DE_PRODUCTO e on (p.ESTADO_DE_PRODUCTO_ID_ESTADO = e.ID_ESTADO) where p.ID_PRODUCTO = "+idProductoProveedor+" and PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'";
         Statement st = null;
         ResultSet rs = null;
         ProductoProveedor resultado = null;
@@ -205,6 +213,7 @@ public class controladorAdministrador {
             st = cnx.createStatement();
             rs = st.executeQuery(sql);       
             
+            int count = 0;
             while(rs.next()){
                 ProductoProveedor productoProveedor = new ProductoProveedor();                
                 productoProveedor.setIdProducto(Integer.parseInt(rs.getString(1)));
@@ -213,9 +222,14 @@ public class controladorAdministrador {
                 productoProveedor.setFechaDeVencimiento(rs.getString(4)); 
                 productoProveedor.setPrecioDeCompra(rs.getInt(5)); 
                 productoProveedor.setStock(rs.getInt(6)); 
-                productoProveedor.setIdTipoDeProducto(rs.getInt(7));
+                productoProveedor.setIdTipoDeProducto(rs.getInt(7)); 
                 productoProveedor.setRutProveedor(rs.getString(8)); 
-                resultado = productoProveedor;              
+                    EstadoDeProducto estadoDeProducto = new EstadoDeProducto();
+                    estadoDeProducto.setIdEstadoDeProducto(rs.getInt(9));
+                    estadoDeProducto.setEstado(rs.getString(10));
+                productoProveedor.setEstadoDeProducto(estadoDeProducto);
+                resultado = productoProveedor;
+                count = count + 1;                
             }
             return resultado;
         }  
@@ -224,7 +238,7 @@ public class controladorAdministrador {
             System.out.println("Error al obtener datos \n" + e.getMessage());
         }
     return resultado;
-    }
+    }     
     
     public static Proveedor[] GetProveedores(Connection cnx){
     String sql = "select RUT_PROVEEDOR, \"RAZÓN_SOCIAL\"  from PROVEEDOR"; 
@@ -382,6 +396,19 @@ public class controladorAdministrador {
         return resultado;
     }
     
+    public static boolean ActualizarEstadoProducto(Connection cnx,int idProducto, int idEstado)
+    {
+        boolean resultado = false;
+        try {
+            PreparedStatement pst = cnx.prepareStatement("update PRODUCTO set ESTADO_DE_PRODUCTO_ID_ESTADO = "+idEstado+" where ID_PRODUCTO = "+idProducto);
+            pst.execute();
+            resultado = true;
+        } catch (SQLException ex) {
+            resultado = false;
+        }        
+        return resultado;
+    }
+    
     public static OrdenDePedido GetOrdenDePedido(Connection cnx, int idOrdenDePedido){
         String sql = "select o.ID_ORDEN_PEDIDO,o.\"Fecha de pedido\", o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
         Statement st = null;
@@ -478,6 +505,49 @@ public class controladorAdministrador {
         {
             resultado[0] = "False";
             resultado[1] = "Error en actualizar cancelación de orden de pedido";
+            resultado[2] = ex.getMessage();
+            return resultado;
+        }
+    }
+    
+    public static String[] ActualizarProductosAprobarPedido(Connection cnx, int idProductoProveedor, int cantidad)
+    {
+        String[] resultado = new String[3];
+        try {        
+            CallableStatement cst = cnx.prepareCall("{call ActualizarProductosAprobarPedido(?,?)}");        
+            cst.setInt(1, idProductoProveedor);    
+            cst.setInt(2, cantidad);  
+            cst.execute();
+            
+            resultado[0] = "True";
+            resultado[1] = "Actualizado con éxito";
+            return resultado;
+        }   
+        catch (SQLException ex)        
+        {
+            resultado[0] = "False";
+            resultado[1] = "Error en actualizar aprobación de orden de pedido";
+            resultado[2] = ex.getMessage();
+            return resultado;
+        }
+    }
+    
+    public static String[] ActualizarProductosEntregarPedido(Connection cnx, int idOrdenDePedido)
+    {
+        String[] resultado = new String[3];
+        try {        
+            CallableStatement cst = cnx.prepareCall("{call ActualizarProductosEntregarPedido(?)}");        
+            cst.setInt(1, idOrdenDePedido);    
+            cst.execute();
+            
+            resultado[0] = "True";
+            resultado[1] = "Actualizado con éxito";
+            return resultado;
+        }   
+        catch (SQLException ex)        
+        {
+            resultado[0] = "False";
+            resultado[1] = "Error en actualizar entrega de productos";
             resultado[2] = ex.getMessage();
             return resultado;
         }

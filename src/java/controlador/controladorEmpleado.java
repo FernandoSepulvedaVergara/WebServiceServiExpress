@@ -335,8 +335,8 @@ public class controladorEmpleado {
     }
     
     public static Producto[] GetProductos(Connection cnx, int idTipoDeProducto){
-    String sql = "select * from producto where tipo_de_producto_id_tipo_de_producto = "+idTipoDeProducto; 
-        String sqlCount = "select count(*) from producto where tipo_de_producto_id_tipo_de_producto = "+idTipoDeProducto;
+    String sql = "select * from producto where tipo_de_producto_id_tipo_de_producto = "+idTipoDeProducto+" and ESTADO_DE_PRODUCTO_ID_ESTADO = 1"; 
+        String sqlCount = "select count(*) from producto where tipo_de_producto_id_tipo_de_producto = "+idTipoDeProducto+" and ESTADO_DE_PRODUCTO_ID_ESTADO = 1";
         Statement st = null;
         ResultSet rs = null;
         Producto[] resultado = null;

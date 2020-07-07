@@ -13,8 +13,9 @@ private int stockCritico;
 private int idTipoDeProducto;
 private int idOrdenDePedido;
 private String rutProveedor;
+private EstadoDeProducto estadoDeProducto;
 
-    public Producto(int idProducto, String descripcion, String marca, String fechaVencimiento, int precioCompra, int precioVenta, int stock, int stockCritico, int idTipoDeProducto, int idOrdenDePedido, String rutProveedor) {
+    public Producto(int idProducto, String descripcion, String marca, String fechaVencimiento, int precioCompra, int precioVenta, int stock, int stockCritico, int idTipoDeProducto, int idOrdenDePedido, String rutProveedor, EstadoDeProducto estadoDeProducto) {
         this.idProducto = idProducto;
         this.descripcion = descripcion;
         this.marca = marca;
@@ -26,6 +27,7 @@ private String rutProveedor;
         this.idTipoDeProducto = idTipoDeProducto;
         this.idOrdenDePedido = idOrdenDePedido;
         this.rutProveedor = rutProveedor;
+        this.estadoDeProducto = estadoDeProducto;
     }
 
     public Producto() {
@@ -117,5 +119,13 @@ private String rutProveedor;
 
     public void setIdOrdenDePedido(int idOrdenDePedido) {
         this.idOrdenDePedido = idOrdenDePedido;
+    }
+
+    public EstadoDeProducto getEstadoDeProducto() {
+        return estadoDeProducto;
+    }
+
+    public void setEstadoDeProducto(EstadoDeProducto estadoDeProducto) {
+        this.estadoDeProducto = estadoDeProducto;
     }
 }

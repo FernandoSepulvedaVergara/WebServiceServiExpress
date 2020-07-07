@@ -10,8 +10,9 @@ public class ProductoProveedor {
     private int stock;
     private int idTipoDeProducto;
     private String rutProveedor;
+    private EstadoDeProducto estadoDeProducto;
 
-    public ProductoProveedor(int idProducto, String descripcion, String marca, String fechaDeVencimiento, int precioDeCompra, int stock, int idTipoDeProducto, String rutProveedor) {
+    public ProductoProveedor(int idProducto, String descripcion, String marca, String fechaDeVencimiento, int precioDeCompra, int stock, int idTipoDeProducto, String rutProveedor, EstadoDeProducto estadoDeProducto) {
         this.idProducto = idProducto;
         this.descripcion = descripcion;
         this.marca = marca;
@@ -20,6 +21,7 @@ public class ProductoProveedor {
         this.stock = stock;
         this.idTipoDeProducto = idTipoDeProducto;
         this.rutProveedor = rutProveedor;
+        this.estadoDeProducto =estadoDeProducto;
     }
 
     public ProductoProveedor() {
@@ -31,6 +33,7 @@ public class ProductoProveedor {
         this.stock = 0;
         this.idTipoDeProducto = 0;
         this.rutProveedor = null;
+        this.estadoDeProducto = null;
     }
 
     public int getIdProducto() {
@@ -96,4 +99,13 @@ public class ProductoProveedor {
     public void setRutProveedor(String rutProveedor) {
         this.rutProveedor = rutProveedor;
     }
+
+    public EstadoDeProducto getEstadoDeProducto() {
+        return estadoDeProducto;
+    }
+
+    public void setEstadoDeProducto(EstadoDeProducto estadoDeProducto) {
+        this.estadoDeProducto = estadoDeProducto;
+    }
+    
 }
