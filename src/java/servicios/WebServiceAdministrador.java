@@ -58,7 +58,7 @@ public class WebServiceAdministrador {
     }
     
     @WebMethod(operationName = "RegistrarOrdenDePedido")
-    public String[]  RegistrarOrdenDePedido(@WebParam(name = "fechaDePedido") String fechaDePedido, @WebParam(name = "total") int total,@WebParam(name = "usuarioRut") String usuarioRut,@WebParam(name = "idEstadoDePedido") int idEstadoDePedido) {
+    public String[]  RegistrarOrdenDePedido(@WebParam(name = "fechaDePedido") String fechaDePedido, @WebParam(name = "total") int total,@WebParam(name = "usuarioRut") String usuarioRut,@WebParam(name = "idEstadoDePedido") int idEstadoDePedido,@WebParam(name = "rutProveedor") String rutProveedor) {
         
         OrdenDePedido ordenDePedido = new OrdenDePedido();
             EstadoDePedido estadoDePedido = new EstadoDePedido();
@@ -67,6 +67,7 @@ public class WebServiceAdministrador {
         ordenDePedido.setTotal(total);
         ordenDePedido.setUsuarioRut(usuarioRut);
         ordenDePedido.setEstadoDePedido(estadoDePedido);
+        ordenDePedido.setRutProveedor(rutProveedor);
         return controladorAdministrador.RegistrarOrdenDePedido(conexion.conexion.getConnection(),ordenDePedido);
     }
 

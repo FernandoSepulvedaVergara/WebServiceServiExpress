@@ -1,6 +1,8 @@
 package controlador;
 
+import clases.EstadoDePedido;
 import clases.EstadoDeProducto;
+import clases.OrdenDePedido;
 import clases.ProductoProveedor;
 import clases.TipoDeProducto;
 import java.sql.Connection;
@@ -205,5 +207,54 @@ public class controladorProveedor {
             resultado[2] = ex.getMessage();
         }        
         return resultado;
+    }
+   
+   public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx, String rutProveedor)
+    {
+        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.\"Fecha de pedido\",o.TOTAL, o.USUARIO_RUT from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
+        String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)";
+        Statement st = null;
+        ResultSet rs = null;
+        OrdenDePedido[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new OrdenDePedido[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                OrdenDePedido ordenDePedido = new OrdenDePedido();
+                ordenDePedido.setIdOrdenPedido(rs.getInt(1));
+                    EstadoDePedido estadoDePedido = new EstadoDePedido();
+                    estadoDePedido.setIdEstadoPedido(rs.getInt(2));
+                    estadoDePedido.setEstado(rs.getString(3));
+                ordenDePedido.setEstadoDePedido(estadoDePedido);
+                ordenDePedido.setFechaDePedido(rs.getString(4));
+                ordenDePedido.setTotal(rs.getInt(5)); 
+                ordenDePedido.setUsuarioRut(rs.getString(6));
+                resultado[count] = ordenDePedido;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
     }
 }

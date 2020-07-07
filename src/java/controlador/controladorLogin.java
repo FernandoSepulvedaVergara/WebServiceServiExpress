@@ -50,16 +50,11 @@ public class controladorLogin {
             st = cnx.createStatement();
             rs = st.executeQuery(sql);
             String[] resultado = new String[4];
-            while (rs.next()) {
-                
-                for (int i = 0; i < 4; i++) {
-                    
-                    if(rs.getString(i+1)!=null)
-                    {
-                    resultado[i] = rs.getString(i+1);
-                    }
-                    else{return null;}                    
-                }
+            while (rs.next()) {                
+                resultado[0] = rs.getString(1);
+                resultado[1] = rs.getString(2);
+                resultado[2] = rs.getString(3);
+                resultado[3] = rs.getString(4);
             }                          
         return resultado;  
         }  
@@ -68,5 +63,5 @@ public class controladorLogin {
             System.out.println("Error al obtener datos \n" + e.getMessage());
         return null;
         }        
-    }    
+    }
 }

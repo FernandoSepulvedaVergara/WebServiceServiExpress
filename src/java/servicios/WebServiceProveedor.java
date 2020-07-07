@@ -1,8 +1,10 @@
 package servicios;
 
 import clases.EstadoDeProducto;
+import clases.OrdenDePedido;
 import clases.ProductoProveedor;
 import clases.TipoDeProducto;
+import controlador.controladorAdministrador;
 import controlador.controladorProveedor;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -56,5 +58,10 @@ public class WebServiceProveedor {
             estadoDeProducto.setIdEstadoDeProducto(idEstadoDeProducto);
         productoProveedor.setEstadoDeProducto(estadoDeProducto);
         return controladorProveedor.RegistrarNuevoProductoProveedor(conexion.conexion.getConnection(),productoProveedor);
+    }
+    @WebMethod(operationName = "GetOrdenesDePedido")
+    public OrdenDePedido[]  GetOrdenesDePedido() {
+//        return controladorProveedor.GetOrdenesDePedido(conexion.conexion.getConnection());
+    return null;
     }
 }
