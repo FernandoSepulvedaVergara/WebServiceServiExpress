@@ -2,6 +2,7 @@ package servicios;
 
 import clases.EstadoDeProducto;
 import clases.OrdenDePedido;
+import clases.Pedidos;
 import clases.ProductoProveedor;
 import clases.TipoDeProducto;
 import controlador.controladorAdministrador;
@@ -59,9 +60,32 @@ public class WebServiceProveedor {
         productoProveedor.setEstadoDeProducto(estadoDeProducto);
         return controladorProveedor.RegistrarNuevoProductoProveedor(conexion.conexion.getConnection(),productoProveedor);
     }
-    @WebMethod(operationName = "GetOrdenesDePedido")
-    public OrdenDePedido[]  GetOrdenesDePedido() {
-//        return controladorProveedor.GetOrdenesDePedido(conexion.conexion.getConnection());
-    return null;
+    @WebMethod(operationName = "GetOrdenesDePedidoProveedor")
+    public OrdenDePedido[]  GetOrdenesDePedidoProveedor(@WebParam(name = "rutProveedor") String rutProveedor) {
+        return controladorProveedor.GetOrdenesDePedidoProveedor(conexion.conexion.getConnection(),rutProveedor);
+    }
+    
+    @WebMethod(operationName = "GetOrdenDePedidoProveedor")
+    public OrdenDePedido  GetOrdenDePedidoProveedor(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+       
+        return controladorProveedor.GetOrdenDePedidoProveedor(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
+    @WebMethod(operationName = "GetPedidosProveedor")
+    public Pedidos[] GetPedidosProveedor(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
+        
+        return controladorProveedor.GetPedidosProveedor(conexion.conexion.getConnection(),idOrdenDePedido);
+    }
+    
+    @WebMethod(operationName = "ActualizarEstadoPedido")
+    public boolean ActualizarEstadoPedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido,@WebParam(name = "idEstado") int idEstado) {
+        
+        return controladorProveedor.ActualizarEstadoPedido(conexion.conexion.getConnection(),idOrdenDePedido, idEstado);
+    }
+    
+    @WebMethod(operationName = "ActualizarProductosAprobarPedido")
+    public String[] ActualizarProductosAprobarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
+        
+        return controladorProveedor.ActualizarProductosAprobarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
     }
 }

@@ -429,36 +429,36 @@ public class controladorEmpleado {
     
     public static Ventas[] GetVentasEmpleado(String filtro, String valorFiltro)
     {
-        String sql;
+         String sql;
         String sqlCount;
         Ventas[] ventas = null;
         
         if(filtro.equals("Id venta"))
         {
-            sql = "select e.ESTADO, v.ID_VENTA, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sql = "select e.ESTADO, v.ID_VENTA,r.PATENTE, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                 + "where v.ID_VENTA = "+Integer.parseInt(valorFiltro);
             
-            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                      + "where v.ID_VENTA = "+Integer.parseInt(valorFiltro);
             
             ventas = GetVentas(conexion.getConnection(),ventas, sql, sqlCount);
         }
         else if(filtro.equals("Fecha venta"))
         {
-            sql = "select e.ESTADO, v.ID_VENTA, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sql = "select e.ESTADO, v.ID_VENTA,r.PATENTE, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                 + "where v.FECHA_VENTA = '"+valorFiltro+"'";
             
-            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                      + "where v.FECHA_VENTA = '"+valorFiltro+"'";
             
             ventas = GetVentas(conexion.getConnection(),ventas, sql, sqlCount);
         }
         else if(filtro.equals("Rut"))
         {
-            sql = "select e.ESTADO, v.ID_VENTA, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sql = "select e.ESTADO, v.ID_VENTA,r.PATENTE, v.MONTO_A_PAGAR, v.MONTO_PAGADO, v.FECHA_VENTA,v.USUARIO_RUT, v.ATENCIONES_ID_ATENCION, v.DOCUMENTO_ID_DOCUMENTO from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                 + "where v.USUARIO_RUT = '"+valorFiltro+"'";
             
-            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) "
+            sqlCount = "select count(*) from ventas v join usuario u on (u.RUT = v.USUARIO_RUT) join estado_de_venta e on (v.ESTADO_DE_VENTA_ID_ESTADO_DE_VENTA = e.ID_ESTADO_DE_VENTA) join ATENCIONES a on(v.ATENCIONES_ID_ATENCION = a.ID_ATENCION) join RESERVA_DE_HORA r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) "
                      + "where v.USUARIO_RUT = '"+valorFiltro+"'";
             
             ventas = GetVentas(conexion.getConnection(),ventas, sql, sqlCount);

@@ -3,8 +3,10 @@ package controlador;
 import clases.EstadoDePedido;
 import clases.EstadoDeProducto;
 import clases.OrdenDePedido;
+import clases.Pedidos;
 import clases.ProductoProveedor;
 import clases.TipoDeProducto;
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -209,10 +211,10 @@ public class controladorProveedor {
         return resultado;
     }
    
-   public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx, String rutProveedor)
+   public static OrdenDePedido[] GetOrdenesDePedidoProveedor(Connection cnx, String rutProveedor)
     {
-        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.\"Fecha de pedido\",o.TOTAL, o.USUARIO_RUT from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
-        String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)";
+        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.fecha_de_pedido,o.TOTAL, o.USUARIO_RUT, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'"; 
+        String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'";
         Statement st = null;
         ResultSet rs = null;
         OrdenDePedido[] resultado = null;
@@ -246,6 +248,7 @@ public class controladorProveedor {
                 ordenDePedido.setFechaDePedido(rs.getString(4));
                 ordenDePedido.setTotal(rs.getInt(5)); 
                 ordenDePedido.setUsuarioRut(rs.getString(6));
+                ordenDePedido.setRutProveedor(rs.getString(7));
                 resultado[count] = ordenDePedido;
                 count = count + 1;                
             }
@@ -256,5 +259,120 @@ public class controladorProveedor {
             System.out.println("Error al obtener datos \n" + e.getMessage());
         }
     return resultado;
+    }
+   
+   public static OrdenDePedido GetOrdenDePedidoProveedor(Connection cnx, int idOrdenDePedido){
+        String sql = "select o.ID_ORDEN_PEDIDO,o.fecha_de_pedido, o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
+        Statement st = null;
+        ResultSet rs = null;
+        OrdenDePedido resultado = null;
+        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);       
+            
+            while(rs.next()){
+                OrdenDePedido ordenDePedido = new OrdenDePedido(); 
+                ordenDePedido.setIdOrdenPedido(rs.getInt(1));
+                ordenDePedido.setFechaDePedido(rs.getString(2));
+                ordenDePedido.setTotal(rs.getInt(3));
+                ordenDePedido.setUsuarioRut(rs.getString(4));
+                    EstadoDePedido estadoDePedido = new EstadoDePedido();
+                    estadoDePedido.setIdEstadoPedido(rs.getInt(5));
+                    estadoDePedido.setEstado(rs.getString(6));
+                ordenDePedido.setEstadoDePedido(estadoDePedido);
+                ordenDePedido.setRutProveedor(rs.getString(7));
+                resultado = ordenDePedido;              
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }
+   
+   public static Pedidos[] GetPedidosProveedor(Connection cnx, int idOrdenDePedido){
+        String sql = "select pe.ID_PEDIDO, pe.CANTIDAD, p.PRECIO_DE_COMPRA,pe.TOTAL_A_PAGAR, p.ID_PRODUCTO,p.DESCRIPCION,p.MARCA,p.FECHA_DE_VENCIMIENTO from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO = p.ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO ="+ idOrdenDePedido; 
+        String sqlCount = "select count(*) from PEDIDO pe join PRODUCTOS_PROVEEDOR p on (pe.PRODUCTOS_PROVEEDOR_ID_PRODUCTO = p.ID_PRODUCTO) where pe.ORDEN_DE_PEDIDO_ID_ORDEN_PEDIDO = "+ idOrdenDePedido;
+        Statement st = null;
+        ResultSet rs = null;
+        Pedidos[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Pedidos[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Pedidos pedido = new Pedidos();
+                pedido.setIdPedido(rs.getInt(1));
+                pedido.setCantidad(rs.getInt(2));
+                pedido.setPrecioCompra(rs.getInt(3));
+                pedido.setTotalAPagar(rs.getInt(4));
+                pedido.setIdProducto(rs.getInt(5));
+                pedido.setDescripcion(rs.getString(6));
+                pedido.setMarca(rs.getString(7));
+                pedido.setFechaDeVencimiento(rs.getString(8));
+                resultado[count] = pedido;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }
+   
+   public static boolean ActualizarEstadoPedido(Connection cnx,int idPedido, int idEstado)
+    {
+        boolean resultado = false;
+        try {
+            PreparedStatement pst = cnx.prepareStatement("update ORDEN_DE_PEDIDO set ESTADO_DE_PEDIDO_ID_ESTADO = "+idEstado+" where ID_ORDEN_PEDIDO = "+idPedido);
+            pst.execute();
+            resultado = true;
+        } catch (SQLException ex) {
+            resultado = false;
+        }        
+        return resultado;
+    }
+   
+   public static String[] ActualizarProductosAprobarPedido(Connection cnx, int idProductoProveedor, int cantidad)
+    {
+        String[] resultado = new String[3];
+        try {        
+            CallableStatement cst = cnx.prepareCall("{call ActualizarProductosAprobarPedido(?,?)}");        
+            cst.setInt(1, idProductoProveedor);    
+            cst.setInt(2, cantidad);  
+            cst.execute();
+            
+            resultado[0] = "True";
+            resultado[1] = "Actualizado con éxito";
+            return resultado;
+        }   
+        catch (SQLException ex)        
+        {
+            resultado[0] = "False";
+            resultado[1] = "Error en actualizar aprobación de orden de pedido";
+            resultado[2] = ex.getMessage();
+            return resultado;
+        }
     }
 }

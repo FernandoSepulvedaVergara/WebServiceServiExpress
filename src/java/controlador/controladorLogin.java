@@ -11,7 +11,7 @@ public class controladorLogin {
     public static String[] ValidarUsuario(Connection cnx,String user, String pass)
     {
         String sql = "select u.rut, u.nombre_de_usuario, u.contraseña, u.tipo_de_usuario_id_tipo_de_usuario from usuario u join tipo_de_usuario t on (u.tipo_de_usuario_id_tipo_de_usuario = t.id_tipo_de_usuario)"
-                    +"where u.contraseña='"+pass+"' and u.nombre_de_usuario='"+user+"'";           
+                    +"where u.contraseña='"+pass+"' and u.nombre_de_usuario='"+user+"' and u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = 1";           
         Statement st = null;
         ResultSet rs = null;
     

@@ -2,6 +2,7 @@ package controlador;
 
 import clases.EstadoDePedido;
 import clases.EstadoDeProducto;
+import clases.EstadoDeUsuario;
 import clases.OrdenDePedido;
 import clases.Pedido;
 import clases.Pedidos;
@@ -9,6 +10,8 @@ import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.TipoDeProducto;
+import clases.TipoDeUsuario;
+import clases.Usuarios;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -284,7 +287,7 @@ public class controladorAdministrador {
     
     public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx)
     {
-        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.\"Fecha de pedido\",o.TOTAL, o.USUARIO_RUT, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
+        String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.fecha_de_pedido,o.TOTAL, o.USUARIO_RUT, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
         String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)";
         Statement st = null;
         ResultSet rs = null;
@@ -412,7 +415,7 @@ public class controladorAdministrador {
     }
     
     public static OrdenDePedido GetOrdenDePedido(Connection cnx, int idOrdenDePedido){
-        String sql = "select o.ID_ORDEN_PEDIDO,o.\"Fecha de pedido\", o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
+        String sql = "select o.ID_ORDEN_PEDIDO,o.fecha_de_pedido, o.TOTAL, o.USUARIO_RUT, e.ID_ESTADO, e.ESTADO, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE ID_ORDEN_PEDIDO = "+idOrdenDePedido; 
         Statement st = null;
         ResultSet rs = null;
         OrdenDePedido resultado = null;
@@ -511,29 +514,7 @@ public class controladorAdministrador {
             resultado[2] = ex.getMessage();
             return resultado;
         }
-    }
-    
-    public static String[] ActualizarProductosAprobarPedido(Connection cnx, int idProductoProveedor, int cantidad)
-    {
-        String[] resultado = new String[3];
-        try {        
-            CallableStatement cst = cnx.prepareCall("{call ActualizarProductosAprobarPedido(?,?)}");        
-            cst.setInt(1, idProductoProveedor);    
-            cst.setInt(2, cantidad);  
-            cst.execute();
-            
-            resultado[0] = "True";
-            resultado[1] = "Actualizado con éxito";
-            return resultado;
-        }   
-        catch (SQLException ex)        
-        {
-            resultado[0] = "False";
-            resultado[1] = "Error en actualizar aprobación de orden de pedido";
-            resultado[2] = ex.getMessage();
-            return resultado;
-        }
-    }
+    }  
     
     public static String[] ActualizarProductosEntregarPedido(Connection cnx, int idOrdenDePedido)
     {
@@ -555,4 +536,182 @@ public class controladorAdministrador {
             return resultado;
         }
     }
+    
+     public static Usuarios[] GetUsuarios(Connection cnx){
+    String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO)"; 
+        String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO)";
+        Statement st = null;
+        ResultSet rs = null;
+        Usuarios[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Usuarios[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Usuarios usuarios = new Usuarios();  
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(1));
+                usuarios.setTipoDeUsuario(tipoDeUsuario);
+                usuarios.setRut(rs.getString(2));
+                usuarios.setNombre(rs.getString(3));
+                usuarios.setApellidoPaterno(rs.getString(4));
+                usuarios.setApellidoMaterno(rs.getString(5));
+                    EstadoDeUsuario estadoDeUsuario = new EstadoDeUsuario();
+                    estadoDeUsuario.setEstadoDeUsuario(rs.getString(6));
+                usuarios.setEstadoDeUsuario(estadoDeUsuario);
+                resultado[count] = usuarios;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }    
+     
+     public static Usuarios[] FiltrarPorUsuario(Connection cnx, boolean filtroAdministrador,boolean filtroCliente,boolean filtroEmpleado){
+        String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where"; 
+        String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where";
+        
+        String or = " or ";
+        String sqlFiltroAdministrador = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 4";
+        String sqlFiltroCliente = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 1";
+        String sqlFiltroEmpleado = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 3";
+        if(filtroAdministrador == true){ 
+            sql = sql + sqlFiltroAdministrador;
+            sqlCount = sqlCount+sqlFiltroAdministrador;
+            if(filtroCliente==true){sql = sql+or+sqlFiltroCliente; sqlCount = sqlCount+or+sqlFiltroCliente;}
+            if(filtroEmpleado==true){sql = sql+or+sqlFiltroEmpleado; sqlCount = sqlCount+or+sqlFiltroEmpleado;}
+        }
+        else{
+            if(filtroCliente == true){
+               sql = sql + sqlFiltroCliente;
+               sqlCount = sqlCount+sqlFiltroCliente;
+                if(filtroAdministrador==true){sql = sql+or+sqlFiltroAdministrador; sqlCount = sqlCount+or+sqlFiltroAdministrador;}
+                if(filtroEmpleado==true){sql = sql+or+sqlFiltroEmpleado; sqlCount = sqlCount+or+sqlFiltroEmpleado;} 
+            }
+            else{
+                if(filtroEmpleado == true){
+                    sql = sql + sqlFiltroEmpleado;
+                    sqlCount = sqlCount+sqlFiltroEmpleado;
+                    if(filtroAdministrador==true){sql = sql+or+sqlFiltroAdministrador; sqlCount = sqlCount+or+sqlFiltroAdministrador;}
+                    if(filtroCliente==true){sql = sql+or+sqlFiltroCliente; sqlCount = sqlCount+or+sqlFiltroCliente;}
+                }
+            }
+        }
+        Statement st = null;
+        ResultSet rs = null;
+        Usuarios[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Usuarios[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Usuarios usuarios = new Usuarios();  
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(1));
+                usuarios.setTipoDeUsuario(tipoDeUsuario);
+                usuarios.setRut(rs.getString(2));
+                usuarios.setNombre(rs.getString(3));
+                usuarios.setApellidoPaterno(rs.getString(4));
+                usuarios.setApellidoMaterno(rs.getString(5));
+                    EstadoDeUsuario estadoDeUsuario = new EstadoDeUsuario();
+                    estadoDeUsuario.setEstadoDeUsuario(rs.getString(6));
+                usuarios.setEstadoDeUsuario(estadoDeUsuario);
+                resultado[count] = usuarios;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }    
+     
+     public static Usuarios[] FiltrarPorRut(Connection cnx, String rut){
+        String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where u.rut = '"+rut+"'"; 
+        String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where u.rut = '"+rut+"'";
+        
+        Statement st = null;
+        ResultSet rs = null;
+        Usuarios[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Usuarios[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Usuarios usuarios = new Usuarios();  
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(1));
+                usuarios.setTipoDeUsuario(tipoDeUsuario);
+                usuarios.setRut(rs.getString(2));
+                usuarios.setNombre(rs.getString(3));
+                usuarios.setApellidoPaterno(rs.getString(4));
+                usuarios.setApellidoMaterno(rs.getString(5));
+                    EstadoDeUsuario estadoDeUsuario = new EstadoDeUsuario();
+                    estadoDeUsuario.setEstadoDeUsuario(rs.getString(6));
+                usuarios.setEstadoDeUsuario(estadoDeUsuario);
+                resultado[count] = usuarios;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }    
 }

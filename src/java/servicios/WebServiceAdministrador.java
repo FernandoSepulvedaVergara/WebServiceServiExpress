@@ -8,6 +8,7 @@ import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.TipoDeProducto;
+import clases.Usuarios;
 import controlador.controladorAdministrador;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -99,12 +100,6 @@ public class WebServiceAdministrador {
         return controladorAdministrador.ActualizarProductosCancelarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
     }
     
-    @WebMethod(operationName = "ActualizarProductosAprobarPedido")
-    public String[] ActualizarProductosAprobarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
-        
-        return controladorAdministrador.ActualizarProductosAprobarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
-    }
-    
     @WebMethod(operationName = "ActualizarProductosEntregarPedido")
     public String[] ActualizarProductosEntregarPedido(@WebParam(name = "idOrdenDePedido") int idOrdenDePedido) {
         
@@ -115,5 +110,20 @@ public class WebServiceAdministrador {
     public boolean ActualizarEstadoProducto(@WebParam(name = "idProducto") int idProducto,@WebParam(name = "idEstado") int idEstado) {
         
         return controladorAdministrador.ActualizarEstadoProducto(conexion.conexion.getConnection(),idProducto,idEstado);
+    }
+    
+    @WebMethod(operationName = "GetUsuarios")
+    public Usuarios[] GetUsuarios() {        
+        return controladorAdministrador.GetUsuarios(conexion.conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "FiltrarPorUsuario")
+    public Usuarios[] FiltrarPorUsuario(@WebParam(name = "filtroAdministrado") boolean filtroAdministrador,@WebParam(name = "filtroCliente") boolean filtroCliente,@WebParam(name = "filtroEmpleado") boolean filtroEmpleado) {        
+        return controladorAdministrador.FiltrarPorUsuario(conexion.conexion.getConnection(),filtroAdministrador,filtroCliente,filtroEmpleado);
+    }
+    
+    @WebMethod(operationName = "FiltrarPorRut")
+    public Usuarios[] FiltrarPorRut(@WebParam(name = "rut") String rut) {        
+        return controladorAdministrador.FiltrarPorRut(conexion.conexion.getConnection(),rut);
     }
 }
