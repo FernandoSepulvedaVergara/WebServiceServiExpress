@@ -1,6 +1,8 @@
-
 package servicios;
 
+import clases.Comuna;
+import clases.Region;
+import clases.TipoDeUsuario;
 import clases.Usuario;
 import conexion.conexion;
 import controlador.controladorUsuario;
@@ -21,9 +23,9 @@ public class WebServiceUsuario {
             @WebParam(name = "telefono") int telefono,
             @WebParam(name = "email") String email,
             @WebParam(name = "direccion") String direccion,
-            @WebParam(name = "comuna") int comuna,
+            @WebParam(name = "comuna") int idComuna,
             @WebParam(name = "nombreUsuario") String nombreUsuario,
-            @WebParam(name = "tipoUsuario") int tipoUsuario,
+            @WebParam(name = "tipoUsuario") int idTipoUsuario,
             @WebParam(name = "contraseña") String contraseña
     ) {
         String[] resultado = new String[2];
@@ -31,9 +33,24 @@ public class WebServiceUsuario {
         if (controladorUsuario.ValidarRut(conexion.getConnection(), rut) != true) {
             if (controladorUsuario.ValidarEmail(conexion.getConnection(), email) != true) {
                 if (controladorUsuario.ValidarNombreUsuario(conexion.getConnection(), nombreUsuario) != true) {
-                    Usuario nuevoUsuario = new Usuario(rut, primerNombre, segundoNombre, apellidoPaterno, apellidoMaterno, telefono,
-                        email, direccion, nombreUsuario, contraseña, tipoUsuario, comuna);
-
+                    
+                    Usuario nuevoUsuario = new Usuario();
+                    nuevoUsuario.setRut(rut);
+                    nuevoUsuario.setPrimerNombre(primerNombre);
+                    nuevoUsuario.setSegundoNombre(segundoNombre);
+                    nuevoUsuario.setApellidoPaterno(apellidoPaterno);
+                    nuevoUsuario.setApellidoMaterno(apellidoMaterno);
+                    nuevoUsuario.setTelefono(telefono);
+                    nuevoUsuario.setEmail(email);
+                    nuevoUsuario.setDireccion(direccion);
+                        Comuna comuna = new Comuna();
+                        comuna.setIdComuna(idComuna);
+                    nuevoUsuario.setComuna(comuna);
+                    nuevoUsuario.setNombreUsuario(nombreUsuario);
+                        TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                        tipoDeUsuario.setIdTipoDeUsuario(idTipoUsuario);
+                    nuevoUsuario.setTipoUsuario(tipoDeUsuario);
+                    nuevoUsuario.setContraseña(contraseña);
                     if (controladorUsuario.IngresarUsuario(conexion.getConnection(), nuevoUsuario)) 
                     {
                         resultado[0] = "true";

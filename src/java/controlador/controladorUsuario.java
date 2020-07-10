@@ -1,5 +1,6 @@
 package controlador;
 
+import clases.TipoDeUsuario;
 import clases.Usuario;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -102,9 +103,9 @@ public class controladorUsuario {
             pst.setString(7, nuevoUsuario.getEmail());
             pst.setString(8, nuevoUsuario.getDireccion());
             pst.setString(9, nuevoUsuario.getNombreUsuario());
-            pst.setString(10, nuevoUsuario.getContraseña());
-            pst.setInt(11, nuevoUsuario.getIdtipoUsuario());
-            pst.setInt(12, nuevoUsuario.getComuna());
+            pst.setString(10, nuevoUsuario.getContraseña());                
+            pst.setInt(11, nuevoUsuario.getTipoUsuario().getIdTipoDeUsuario());
+            pst.setInt(12, nuevoUsuario.getComuna().getIdComuna());
         
             pst.execute();       
             return true;

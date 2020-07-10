@@ -11,7 +11,10 @@ import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.TipoDeProducto;
 import clases.TipoDeUsuario;
+import clases.Usuario;
 import clases.Usuarios;
+import clases.Comuna;
+import clases.Region;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -664,7 +667,7 @@ public class controladorAdministrador {
     return resultado;
     }    
      
-     public static Usuarios[] FiltrarPorRut(Connection cnx, String rut){
+    public static Usuarios[] FiltrarPorRut(Connection cnx, String rut){
         String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where u.rut = '"+rut+"'"; 
         String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where u.rut = '"+rut+"'";
         
@@ -704,6 +707,48 @@ public class controladorAdministrador {
                     estadoDeUsuario.setEstadoDeUsuario(rs.getString(6));
                 usuarios.setEstadoDeUsuario(estadoDeUsuario);
                 resultado[count] = usuarios;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }    
+    
+    public static Usuario GetInfoUsuario(Connection cnx, String rut){
+        String sql = "select u.RUT, u.PRIMER_NOMBRE, u.SEGUNDO_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, u.\"TELÉFONO\", u.EMAIL, u.\"DIRECCIÓN\", u.NOMBRE_DE_USUARIO, u.\"CONTRASEÑA\", t.TIPO_DE_USUARIO, c.COMUNA , r.\"REGIÓN\" from usuario u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join COMUNA c on (u.COMUNA_ID_COMUNA = c.ID_COMUNA) join \"REGIÓN\" r on (c.\"REGIÓN_ID_REGIÓN\" = r.\"ID_REGIÓN\") where u.RUT = '"+rut+"'"; 
+       
+        Statement st = null;
+        ResultSet rs = null;
+         Usuario resultado = new Usuario();  
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);   
+            
+            int count = 0;
+            while(rs.next()){
+                resultado.setRut(rs.getString(1));
+                resultado.setPrimerNombre(rs.getString(2));
+                resultado.setSegundoNombre(rs.getString(3));
+                resultado.setApellidoPaterno(rs.getString(4));
+                resultado.setApellidoMaterno(rs.getString(5));
+                resultado.setTelefono(rs.getInt(6));
+                resultado.setEmail(rs.getString(7));
+                resultado.setDireccion(rs.getString(8));
+                resultado.setNombreUsuario(rs.getString(9));
+                resultado.setContraseña(rs.getString(10));
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(11));
+                resultado.setTipoUsuario(tipoDeUsuario);
+                    Comuna comuna = new Comuna();
+                    comuna.setComuna(rs.getString(12));
+                resultado.setComuna(comuna);
+                    Region region = new Region();
+                    region.setRegion(rs.getString(13));
+                resultado.setRegion(region);                   
                 count = count + 1;                
             }
             return resultado;

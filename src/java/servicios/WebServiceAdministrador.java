@@ -8,6 +8,7 @@ import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.TipoDeProducto;
+import clases.Usuario;
 import clases.Usuarios;
 import controlador.controladorAdministrador;
 import javax.jws.WebService;
@@ -125,5 +126,15 @@ public class WebServiceAdministrador {
     @WebMethod(operationName = "FiltrarPorRut")
     public Usuarios[] FiltrarPorRut(@WebParam(name = "rut") String rut) {        
         return controladorAdministrador.FiltrarPorRut(conexion.conexion.getConnection(),rut);
+    }
+    
+    @WebMethod(operationName = "GetInfoUsuario")
+    public Usuario GetInfoUsuario(@WebParam(name = "rut") String rut) {        
+        return controladorAdministrador.GetInfoUsuario(conexion.conexion.getConnection(),rut);
+    }
+    
+    @WebMethod(operationName = "ActualizaEstadoUsuario")
+    public Usuario ActualizaEstadoUsuario(@WebParam(name = "nombreUsuario") String nombreUsuario) {        
+        return null;
     }
 }

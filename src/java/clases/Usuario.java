@@ -11,10 +11,11 @@ private String email;
 private String direccion;
 private String nombreUsuario;
 private String contraseña;
-private int idtipoUsuario;
-private int comuna;
+private TipoDeUsuario tipoUsuario;
+private Comuna comuna;
+private Region region;
 
-    public Usuario(String rut, String primerNombre, String segundoNombre, String apellidoPaterno, String apellidoMaterno, int telefono, String email, String direccion, String nombreUsuario, String contraseña, int idtipoUsuario, int comuna) {
+    public Usuario(String rut, String primerNombre, String segundoNombre, String apellidoPaterno, String apellidoMaterno, int telefono, String email, String direccion, String nombreUsuario, String contraseña, TipoDeUsuario tipoUsuario, Comuna comuna, Region region) {
         this.rut = rut;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
@@ -25,16 +26,33 @@ private int comuna;
         this.direccion = direccion;
         this.nombreUsuario = nombreUsuario;
         this.contraseña = contraseña;
-        this.idtipoUsuario = idtipoUsuario;
+        this.tipoUsuario = tipoUsuario;
         this.comuna = comuna;
+        this.region = region;
     }
 
-    public int getIdtipoUsuario() {
-        return idtipoUsuario;
+    public Usuario() {
+        this.rut = null;
+        this.primerNombre = null;
+        this.segundoNombre = null;
+        this.apellidoPaterno = null;
+        this.apellidoMaterno = null;
+        this.telefono = 0;
+        this.email = null;
+        this.direccion = null;
+        this.nombreUsuario = null;
+        this.contraseña = null;
+        this.tipoUsuario = null;
+        this.comuna = null;
+        this.region = null;
     }
 
-    public void setIdtipoUsuario(int idtipoUsuario) {
-        this.idtipoUsuario = idtipoUsuario;
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 
     public String getRut() {
@@ -116,15 +134,20 @@ private int comuna;
     public void setContraseña(String contraseña) {
         this.contraseña = contraseña;
     }
-    
-    public int getComuna() {
+
+    public TipoDeUsuario getTipoUsuario() {
+        return tipoUsuario;
+    }
+
+    public void setTipoUsuario(TipoDeUsuario tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
+    }
+
+    public Comuna getComuna() {
         return comuna;
     }
 
-    public void setComuna(String contraseña) {
+    public void setComuna(Comuna comuna) {
         this.comuna = comuna;
     }
-
-
-
 }
