@@ -112,9 +112,9 @@ public class WebServiceAdministrador {
         return controladorAdministrador.ActualizarEstadoProducto(conexion.conexion.getConnection(),idProducto,idEstado);
     }
     
-    @WebMethod(operationName = "GetUsuarios")
-    public Usuarios[] GetUsuarios() {        
-        return controladorAdministrador.GetUsuarios(conexion.conexion.getConnection());
+    @WebMethod(operationName = "SeleccionarTodosLosUsuarios")
+    public Usuarios[] SeleccionarTodosLosUsuarios() {        
+        return controladorAdministrador.SeleccionarTodosLosUsuarios(conexion.conexion.getConnection());
     }
     
     @WebMethod(operationName = "FiltrarPorUsuario")

@@ -537,7 +537,7 @@ public class controladorAdministrador {
         }
     }
     
-     public static Usuarios[] GetUsuarios(Connection cnx){
+     public static Usuarios[] SeleccionarTodosLosUsuarios(Connection cnx){
     String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO)"; 
         String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO)";
         Statement st = null;
@@ -590,11 +590,11 @@ public class controladorAdministrador {
      public static Usuarios[] FiltrarPorUsuario(Connection cnx, boolean filtroAdministrador,boolean filtroCliente,boolean filtroEmpleado){
         String sql = "select t.TIPO_DE_USUARIO, u.RUT, u.PRIMER_NOMBRE, u.APELLIDO_PATERNO, u.APELLIDO_MATERNO, e.ESTADO FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where"; 
         String sqlCount = "select count(*) FROM USUARIO u join TIPO_DE_USUARIO t on (u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (u.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where";
-        
         String or = " or ";
         String sqlFiltroAdministrador = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 4";
         String sqlFiltroCliente = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 1";
         String sqlFiltroEmpleado = " u.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = 3";
+        
         if(filtroAdministrador == true){ 
             sql = sql + sqlFiltroAdministrador;
             sqlCount = sqlCount+sqlFiltroAdministrador;
