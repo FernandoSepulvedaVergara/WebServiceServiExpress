@@ -14,8 +14,9 @@ private String contraseña;
 private TipoDeUsuario tipoUsuario;
 private Comuna comuna;
 private Region region;
+private EstadoDeUsuario estadoDeUsuario;
 
-    public Usuario(String rut, String primerNombre, String segundoNombre, String apellidoPaterno, String apellidoMaterno, int telefono, String email, String direccion, String nombreUsuario, String contraseña, TipoDeUsuario tipoUsuario, Comuna comuna, Region region) {
+    public Usuario(String rut, String primerNombre, String segundoNombre, String apellidoPaterno, String apellidoMaterno, int telefono, String email, String direccion, String nombreUsuario, String contraseña, TipoDeUsuario tipoUsuario, Comuna comuna, Region region, EstadoDeUsuario estadoDeUsuario) {
         this.rut = rut;
         this.primerNombre = primerNombre;
         this.segundoNombre = segundoNombre;
@@ -29,6 +30,7 @@ private Region region;
         this.tipoUsuario = tipoUsuario;
         this.comuna = comuna;
         this.region = region;
+        this.estadoDeUsuario = estadoDeUsuario;
     }
 
     public Usuario() {
@@ -45,6 +47,7 @@ private Region region;
         this.tipoUsuario = null;
         this.comuna = null;
         this.region = null;
+        this.estadoDeUsuario = null;
     }
 
     public Region getRegion() {
@@ -150,4 +153,13 @@ private Region region;
     public void setComuna(Comuna comuna) {
         this.comuna = comuna;
     }
+
+    public EstadoDeUsuario getEstadoDeUsuario() {
+        return estadoDeUsuario;
+    }
+
+    public void setEstadoDeUsuario(EstadoDeUsuario estadoDeUsuario) {
+        this.estadoDeUsuario = estadoDeUsuario;
+    }
+    
 }
