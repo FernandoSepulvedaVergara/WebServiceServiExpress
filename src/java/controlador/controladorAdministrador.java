@@ -288,10 +288,35 @@ public class controladorAdministrador{
     return resultado;
     }
     
-    public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx)
+    public static OrdenDePedido[] GetOrdenesDePedido(Connection cnx,boolean filtroSeleccionarTodosLosPedidos,boolean filtroBuscar,boolean filtroEstado,String tipoDeBusqueda,String valorFiltro)
     {
         String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.fecha_de_pedido,o.TOTAL, o.USUARIO_RUT, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)"; 
         String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO)";
+        
+        if(filtroBuscar){
+            String sqlBuscar;
+            if(tipoDeBusqueda.equals("Id orden de pedido")){
+                sqlBuscar = " where o.ID_ORDEN_PEDIDO = " + valorFiltro;
+                sql = sql + sqlBuscar;
+                sqlCount = sqlCount + sqlBuscar;
+            }
+            else if(tipoDeBusqueda.equals("Proveedor")){
+                sqlBuscar = " where o.PROVEEDOR_RUT_PROVEEDOR = '"+valorFiltro+"'";
+                sql = sql + sqlBuscar;
+                sqlCount = sqlCount + sqlBuscar;
+            }
+            else if(tipoDeBusqueda.equals("Fecha de pedido")){
+                sqlBuscar = " where o.FECHA_DE_PEDIDO = '"+valorFiltro+"'";
+                sql = sql + sqlBuscar;
+                sqlCount = sqlCount + sqlBuscar;
+            }
+        }
+        else if(filtroEstado){            
+            String sqlEstado = " where e.ESTADO = '"+valorFiltro+"'";
+            sql = sql + sqlEstado;
+            sqlCount = sqlCount + sqlEstado;
+        }
+        
         Statement st = null;
         ResultSet rs = null;
         OrdenDePedido[] resultado = null;
@@ -861,67 +886,153 @@ public class controladorAdministrador{
     return resultado;   
    }
    
+   public static TipoDeUsuario[] GetTiposDeUsuario(Connection cnx){
+        String sql = "select * from TIPO_DE_USUARIO WHERE ID_TIPO_DE_USUARIO = 3 or ID_TIPO_DE_USUARIO = 4"; 
+        String sqlCount = "select count(*) from TIPO_DE_USUARIO WHERE ID_TIPO_DE_USUARIO = 3 or ID_TIPO_DE_USUARIO = 4";
+        Statement st = null;
+        ResultSet rs = null;
+        TipoDeUsuario[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new TipoDeUsuario[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();                
+                tipoDeUsuario.setIdTipoDeUsuario(rs.getInt(1));
+                tipoDeUsuario.setTipoDeUsuario(rs.getString(2));
+                resultado[count] = tipoDeUsuario;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;   
+   }
+   
    private static String[] ValidarNombreUsuarioEmail(Connection cnx, String nombreUsuario, String email, String rut){
         String sqlNombreUsuario = "select NOMBRE_DE_USUARIO from USUARIO WHERE NOMBRE_DE_USUARIO = '"+nombreUsuario+"'";
         String sqlEmail = "select email from USUARIO WHERE email = '"+email+"'";
         
-        String sqlValidacionNombreUsuario = "select NOMBRE_DE_USUARIO from USUARIO WHERE NOMBRE_DE_USUARIO = '"+nombreUsuario+"' and rut = '"+rut+"'";
-        String sqlValidacionEmail = "select email from USUARIO WHERE email = '"+email+"' and rut = '"+rut+"'";
+        String sqlValidacionNombreUsuarioRut = "select NOMBRE_DE_USUARIO from USUARIO WHERE NOMBRE_DE_USUARIO = '"+nombreUsuario+"' and rut = '"+rut+"'";
+        String sqlValidacionEmailRut = "select email from USUARIO WHERE email = '"+email+"' and rut = '"+rut+"'";
         
         Statement st = null;
         ResultSet rs = null;
         String[] resultado = new String[2];   
+        resultado[0] = "false";
         try {
             st = cnx.createStatement();
-            rs = st.executeQuery(sqlValidacionNombreUsuario);
+            rs = st.executeQuery(sqlValidacionNombreUsuarioRut);
 
             while (rs.next()) {
-                resultado[0] = "true";
+                resultado[0] = "true";    
             }  
             
             if(resultado[0] != "true"){
-                
+            resultado[0] = "true";
             st = cnx.createStatement();
             rs = st.executeQuery(sqlNombreUsuario);
-
+                
             while (rs.next()) {
                 resultado[0] = "false";
                 resultado[1] = "Nombre de usuario ya esta registrado";
-            }    
+            }
+            if(resultado[0] != "false"){
+                resultado[0] = "true";
+            }
         }   
-        } catch (SQLException d) {
+        }         
+        catch (SQLException d) {
             resultado[0] = "false";
             resultado[1] = "Error validación nombre de usuario";
         }
         
-       try {
-           st = cnx.createStatement();
-           rs = st.executeQuery(sqlValidacionEmail);
-
-           while (rs.next()) {
-               resultado[0] = "true";
-           }
-           if (resultado[0] != "true") {
-               st = cnx.createStatement();
-               rs = st.executeQuery(sqlEmail);
-               while (rs.next()) {
-                   resultado[0] = "false";
-                   resultado[1] = "Email ya esta registrado";
-                }
+            if(resultado[0] != "true"){
+                return resultado;
             }
-        }
-        catch (SQLException ex) {
-           resultado[0] = "false";
-           resultado[1] = "Error validación email";
+            else if(resultado[0] == "true"){
+            resultado[0] = "false";
+            try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlValidacionEmailRut);
+
+                while (rs.next()) {
+                    resultado[0] = "true";    
+                }  
+            
+            if(resultado[0] != "true"){
+            resultado[0] = "true";
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlEmail);
+                
+                while (rs.next()) {
+                    resultado[0] = "false";
+                    resultado[1] = "Email ya esta registrado";
+                }
+                if(resultado[0] != "false"){
+                    resultado[0] = "true";
+                }
+            }   
+        }         
+            catch (SQLException d) {
+                resultado[0] = "false";
+                resultado[1] = "Error validación email";
+            }
         }
         return resultado;    
     }
+   
+  private static String[] ValidacionRut(Connection cnx,String rut){
+       String sqlRut = "select rut from USUARIO WHERE rut = '"+rut+"'";
+       
+        Statement st = null;
+        ResultSet rs = null;
+        String[] resultado = new String[2]; 
+        resultado[0] = "true";
+     try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlRut);
+            while (rs.next()) {
+                resultado[0] = "false";
+                resultado[1] = "Rut ya esta registrado";
+            }
+            if(resultado[0] !="false"){
+                resultado[0] = "true";
+            }
+            
+        } catch (SQLException d) {
+            resultado[0] = "false";
+            resultado[1] = "Error validación nombre de usuario";
+        }
+     return resultado;
+   }
 
+   
 public static String[] ActualizarUsuario(Connection cnx,Usuario actualizarUsuario,String rut,String nombreUsuario)
     {
         String[] resultado = new String[3];
-        String[] validarRutNombreUsuario = ValidarNombreUsuarioEmail(cnx,actualizarUsuario.getNombreUsuario(),actualizarUsuario.getEmail(), rut);
-        if(validarRutNombreUsuario[0] == "true"){
+        resultado[0] = "Mensaje";
+        String[] validarRutNombreUsuarioEmail = ValidarNombreUsuarioEmail(cnx,actualizarUsuario.getNombreUsuario(),actualizarUsuario.getEmail(), rut);
+        if(validarRutNombreUsuarioEmail[0] == "true"){
             try {
                 CallableStatement cst = cnx.prepareCall("{call ActualizarUsuario(?,?,?,?,?,?,?,?,?,?,?,?)}");
                 cst.setString(1, actualizarUsuario.getPrimerNombre());
@@ -944,8 +1055,50 @@ public static String[] ActualizarUsuario(Connection cnx,Usuario actualizarUsuari
                 resultado[1] = "No se pudo actualizar el usuario";
                 resultado[2] = ex.getMessage();
             }     
-        }else if(validarRutNombreUsuario[0] != "true"){
-            resultado = validarRutNombreUsuario;
+        }else if(validarRutNombreUsuarioEmail[0] != "true"){
+            resultado = validarRutNombreUsuarioEmail;
+        }
+        return resultado;
+    }
+
+
+public static String[] RegistrarNuevoUsuario(Connection cnx,Usuario nuevoUsuario)
+    {
+        String[] resultado = new String[3];
+        String[] validarNombreUsuarioEmail = ValidarNombreUsuarioEmail(cnx,nuevoUsuario.getNombreUsuario(),nuevoUsuario.getEmail(), nuevoUsuario.getRut());
+        String[] validacionRut = ValidacionRut(cnx,nuevoUsuario.getRut());
+        if(validarNombreUsuarioEmail[0] == "true"){
+            if(validacionRut[0] == "true"){
+                try {
+                    PreparedStatement pst = cnx.prepareStatement("insert into usuario values(?,?,?,?,?,?,?,?,?,?,?,?,?)");
+                    pst.setString(1, nuevoUsuario.getRut());
+                    pst.setString(2, nuevoUsuario.getPrimerNombre());
+                    pst.setString(3, nuevoUsuario.getSegundoNombre());
+                    pst.setString(4, nuevoUsuario.getApellidoPaterno());
+                    pst.setString(5, nuevoUsuario.getApellidoMaterno());
+                    pst.setInt(6, nuevoUsuario.getTelefono());
+                    pst.setString(7, nuevoUsuario.getEmail());
+                    pst.setString(8, nuevoUsuario.getDireccion());
+                    pst.setString(9, nuevoUsuario.getNombreUsuario());
+                    pst.setString(10, nuevoUsuario.getContraseña());
+                    pst.setInt(11, nuevoUsuario.getTipoUsuario().getIdTipoDeUsuario());
+                    pst.setInt(12, nuevoUsuario.getComuna().getIdComuna());
+                    pst.setInt(13, nuevoUsuario.getEstadoDeUsuario().getIdEstadoDeUsuario());
+                    pst.execute();
+                    resultado[0] = "true";
+                    resultado[1] = "Usuario registrado correctamente";
+                } catch (SQLException ex) {
+                    resultado[0] = "false";
+                    resultado[1] = "No se pudo registrar el usuario";
+                    resultado[2] = ex.getMessage();
+                }     
+            }
+            else if(validacionRut[0] != "true"){
+                resultado = validacionRut;
+            }
+        }
+        else if(validarNombreUsuarioEmail[0] != "true"){
+            resultado = validarNombreUsuarioEmail;
         }
         return resultado;
     }

@@ -10,6 +10,7 @@ import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.Region;
 import clases.TipoDeProducto;
+import clases.TipoDeUsuario;
 import clases.Usuario;
 import clases.Usuarios;
 import conexion.conexion;
@@ -52,8 +53,12 @@ public class WebServiceAdministrador {
     }
    
     @WebMethod(operationName = "GetOrdenesDePedido")
-    public OrdenDePedido[]  GetOrdenesDePedido() {
-        return controladorAdministrador.GetOrdenesDePedido(conexion.getConnection());
+    public OrdenDePedido[]  GetOrdenesDePedido(@WebParam(name = "filtroSeleccionarTodosLosPedidos") boolean filtroSeleccionarTodosLosPedidos,
+                                               @WebParam(name = "filtroBuscar") boolean filtroBuscar,
+                                               @WebParam(name = "filtroEstado") boolean filtroEstado,
+                                               @WebParam(name = "tipoDeBusqueda") String tipoDeBusqueda,
+                                               @WebParam(name = "valorFiltro") String valorFiltro) {
+        return controladorAdministrador.GetOrdenesDePedido(conexion.getConnection(),filtroSeleccionarTodosLosPedidos,filtroBuscar,filtroEstado,tipoDeBusqueda,valorFiltro);
     }
     
      @WebMethod(operationName = "GetOrdenDePedido")
@@ -154,5 +159,15 @@ public class WebServiceAdministrador {
     @WebMethod(operationName = "GetComunas")
     public Comuna[] GetComunas(@WebParam(name = "idRegion") int idRegion){        
         return controladorAdministrador.GetComunas(conexion.getConnection(), idRegion);
+    }
+    
+    @WebMethod(operationName = "GetTiposDeUsuario")
+    public TipoDeUsuario[] GetTiposDeUsuario(){        
+        return controladorAdministrador.GetTiposDeUsuario(conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "RegistrarNuevoUsuario")
+    public String[] RegistrarNuevoUsuario(@WebParam(name = "nuevoUsuario") Usuario nuevoUsuario){        
+        return controladorAdministrador.RegistrarNuevoUsuario(conexion.getConnection(),nuevoUsuario);
     }
 }
