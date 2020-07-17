@@ -1,5 +1,7 @@
 package controlador;
 
+import clases.Comuna;
+import clases.Region;
 import clases.TipoDeUsuario;
 import clases.Usuario;
 import java.sql.Connection;
@@ -92,7 +94,7 @@ public class controladorUsuario {
     {
         try {        
             PreparedStatement pst = cnx.prepareStatement("INSERT INTO USUARIO "
-                                                         +"VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+                                                         +"VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
         
             pst.setString(1, nuevoUsuario.getRut());
             pst.setString(2, nuevoUsuario.getPrimerNombre());
@@ -106,6 +108,7 @@ public class controladorUsuario {
             pst.setString(10, nuevoUsuario.getContraseña());                
             pst.setInt(11, nuevoUsuario.getTipoUsuario().getIdTipoDeUsuario());
             pst.setInt(12, nuevoUsuario.getComuna().getIdComuna());
+            pst.setInt(13, nuevoUsuario.getEstadoDeUsuario().getIdEstadoDeUsuario());
         
             pst.execute();       
             return true;
@@ -117,5 +120,90 @@ public class controladorUsuario {
         return false;
         }
     }
+    
+    
+    public static Region[] GetRegiones(Connection cnx){
+        String sql = "select * from región"; 
+        String sqlCount = "select count(*) from región";
+        Statement st = null;
+        ResultSet rs = null;
+        Region[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Region[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Region region = new Region();                
+                region.setIdRegion(rs.getInt(1));
+                region.setRegion(rs.getString(2)); 
+                resultado[count] = region;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }
+    
+    public static Comuna[] GetComunas(Connection cnx, int idRegion){
+        String sql = "select ID_COMUNA, COMUNA from comuna WHERE \"REGIÓN_ID_REGIÓN\" = "+idRegion; 
+        String sqlCount = "select count(*) from comuna WHERE \"REGIÓN_ID_REGIÓN\" = "+idRegion;
+        Statement st = null;
+        ResultSet rs = null;
+        Comuna[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Comuna[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Comuna comuna = new Comuna();                
+                comuna.setIdComuna(rs.getInt(1));
+                comuna.setComuna(rs.getString(2)); 
+                resultado[count] = comuna;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;   
+   }
 }
 

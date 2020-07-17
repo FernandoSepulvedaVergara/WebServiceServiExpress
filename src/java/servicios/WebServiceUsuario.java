@@ -1,10 +1,12 @@
 package servicios;
 
 import clases.Comuna;
+import clases.EstadoDeUsuario;
 import clases.Region;
 import clases.TipoDeUsuario;
 import clases.Usuario;
 import conexion.conexion;
+import controlador.controladorEmpleado;
 import controlador.controladorUsuario;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
@@ -26,7 +28,8 @@ public class WebServiceUsuario {
             @WebParam(name = "comuna") int idComuna,
             @WebParam(name = "nombreUsuario") String nombreUsuario,
             @WebParam(name = "tipoUsuario") int idTipoUsuario,
-            @WebParam(name = "contraseña") String contraseña
+            @WebParam(name = "contraseña") String contraseña,
+            @WebParam(name = "idEstadoUsuario") int idEstadoUsuario
     ) {
         String[] resultado = new String[2];
 
@@ -51,6 +54,9 @@ public class WebServiceUsuario {
                         tipoDeUsuario.setIdTipoDeUsuario(idTipoUsuario);
                     nuevoUsuario.setTipoUsuario(tipoDeUsuario);
                     nuevoUsuario.setContraseña(contraseña);
+                    EstadoDeUsuario estadoDeUsuario = new EstadoDeUsuario();
+                        estadoDeUsuario.setIdEstadoDeUsuario(idEstadoUsuario);
+                    nuevoUsuario.setEstadoDeUsuario(estadoDeUsuario);
                     if (controladorUsuario.IngresarUsuario(conexion.getConnection(), nuevoUsuario)) 
                     {
                         resultado[0] = "true";
@@ -81,5 +87,15 @@ public class WebServiceUsuario {
             resultado[1] = "Rut ya está registrado";
             return resultado;
         }
+    }
+    
+    @WebMethod(operationName = "GetRegiones")
+    public Region[] GetRegiones(){        
+        return controladorUsuario.GetRegiones(conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "GetComunas")
+    public Comuna[] GetComunas(@WebParam(name = "idRegion") int idRegion){        
+        return controladorUsuario.GetComunas(conexion.getConnection(), idRegion);
     }
 }

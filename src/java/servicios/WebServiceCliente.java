@@ -1,13 +1,17 @@
 package servicios;
 
 import clases.Atenciones;
+import clases.Comuna;
+import clases.Region;
 import clases.ReservaDeHora;
 import clases.Sucursal;
 import clases.TipoDeServicio;
 import clases.TipoDeVehiculo;
+import clases.Usuario;
 import clases.Vehiculo;
 import clases.Ventas;
 import conexion.conexion;
+import controlador.controladorAdministrador;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -46,12 +50,12 @@ public class WebServiceCliente {
     }
     
     @WebMethod(operationName = "IngresarVehiculo")
-    public String[] IngresarVehiculo(@WebParam(name = "patente") String patente, @WebParam(name = "numeroMotor") int numeroMotor,
-                                    @WebParam(name = "numeroChasis") String numeroChasis,@WebParam(name = "id_tipo_de_vehiculo") int id_tipo_de_vehiculo,
-                                    @WebParam(name = "rut") String rut) 
+    public String[] IngresarVehiculo(@WebParam(name = "patente") String patente, @WebParam(name = "marca") String marca,
+                                    @WebParam(name = "modelo") String modelo, @WebParam(name = "año") String año,
+                                    @WebParam(name = "id_tipo_de_vehiculo") int id_tipo_de_vehiculo, @WebParam(name = "rut") String rut) 
     {
         
-        Vehiculo nuevoVehiculo = new Vehiculo(patente, numeroMotor, numeroChasis, id_tipo_de_vehiculo, rut);        
+        Vehiculo nuevoVehiculo = new Vehiculo(patente, marca, modelo,año, id_tipo_de_vehiculo, rut);        
         String[] resultado = new String[2];        
         if(controlador.controladorCliente.ValidarPatente(conexion.getConnection(), patente) != true)
         {
@@ -124,5 +128,25 @@ public class WebServiceCliente {
     public boolean[] ValidarDisponibilidad(@WebParam(name = "fecha") String fecha,@WebParam(name = "hora") String hora,@WebParam(name = "rut") String rut) 
     {   
         return controlador.controladorCliente.ValidarDisponibilidad(conexion.getConnection(), fecha, hora, rut);
+    }
+    
+    @WebMethod(operationName = "GetInfoUsuario")
+    public Usuario GetInfoUsuario(@WebParam(name = "rut") String rut) {        
+        return controlador.controladorCliente.GetInfoUsuario(conexion.getConnection(),rut);
+    }
+    
+    @WebMethod(operationName = "GetRegiones")
+    public Region[] GetRegiones(){        
+        return controlador.controladorCliente.GetRegiones(conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "GetComunas")
+    public Comuna[] GetComunas(@WebParam(name = "idRegion") int idRegion){        
+        return controlador.controladorCliente.GetComunas(conexion.getConnection(), idRegion);
+    }
+    
+    @WebMethod(operationName = "ActualizarUsuario")
+    public String[] ActualizarUsuario(@WebParam(name = "actualizarUsuario") Usuario actualizarUsuario, @WebParam(name = "rut") String rut, @WebParam(name = "nombreUsuario") String nombreUsuario) {        
+        return controlador.controladorCliente.ActualizarUsuario(conexion.getConnection(),actualizarUsuario, rut, nombreUsuario);
     }
 }

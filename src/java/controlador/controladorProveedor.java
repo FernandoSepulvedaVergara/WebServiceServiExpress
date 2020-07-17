@@ -211,10 +211,30 @@ public class controladorProveedor {
         return resultado;
     }
    
-   public static OrdenDePedido[] GetOrdenesDePedidoProveedor(Connection cnx, String rutProveedor)
+   public static OrdenDePedido[] GetOrdenesDePedidoProveedor(Connection cnx,boolean filtroSeleccionarTodosLosPedidos,boolean filtroBuscar,boolean filtroEstado,String tipoDeBusqueda,String valorFiltro, String rutProveedor)
     {
         String sql = "select o.ID_ORDEN_PEDIDO,e.ID_ESTADO,e.ESTADO,o.fecha_de_pedido,o.TOTAL, o.USUARIO_RUT, o.PROVEEDOR_RUT_PROVEEDOR from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'"; 
         String sqlCount = "select count(*) from ORDEN_DE_PEDIDO o join ESTADO_DE_PEDIDO e on (o.ESTADO_DE_PEDIDO_ID_ESTADO = e.ID_ESTADO) WHERE PROVEEDOR_RUT_PROVEEDOR = '"+rutProveedor+"'";
+        
+        if(filtroBuscar){
+            String sqlBuscar;
+            if(tipoDeBusqueda.equals("Id orden de pedido")){
+                sqlBuscar = " and o.ID_ORDEN_PEDIDO = " + valorFiltro;
+                sql = sql + sqlBuscar;
+                sqlCount = sqlCount + sqlBuscar;
+            }
+            else if(tipoDeBusqueda.equals("Fecha de pedido")){
+                sqlBuscar = " and o.FECHA_DE_PEDIDO = '"+valorFiltro+"'";
+                sql = sql + sqlBuscar;
+                sqlCount = sqlCount + sqlBuscar;
+            }
+        }
+        else if(filtroEstado){            
+            String sqlEstado = " and e.ESTADO = '"+valorFiltro+"'";
+            sql = sql + sqlEstado;
+            sqlCount = sqlCount + sqlEstado;
+        }
+        
         Statement st = null;
         ResultSet rs = null;
         OrdenDePedido[] resultado = null;

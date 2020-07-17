@@ -2,14 +2,18 @@ package servicios;
 
 import clases.Atencion;
 import clases.Atenciones;
+import clases.Comuna;
 import clases.EstadoDeAtencion;
 import clases.EstadoDeVenta;
 import clases.Producto;
 import clases.ProductoVendido;
+import clases.Region;
 import clases.TipoDeDocumento;
 import clases.TipoDeProducto;
 import clases.TipoDeServicio;
+import clases.Usuario;
 import clases.Ventas;
+import conexion.conexion;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
@@ -29,12 +33,12 @@ public class WebServiceEmpleado {
     @WebMethod(operationName = "GetTipoDeServicios")
     public TipoDeServicio[] GetTipoDeServicios() {
         
-        return controladorEmpleado.GetTipoDeServicios(conexion.conexion.getConnection());
+        return controladorEmpleado.GetTipoDeServicios(conexion.getConnection());
     }
     
     @WebMethod(operationName = "GetAtencion")
     public Atencion GetAtencion(@WebParam(name = "idReserva") int idReserva) {
-        return controladorEmpleado.GetAtencion(conexion.conexion.getConnection(),idReserva);
+        return controladorEmpleado.GetAtencion(conexion.getConnection(),idReserva);
     }
     
     @WebMethod(operationName = "RegistrarAtencion")
@@ -55,7 +59,7 @@ public class WebServiceEmpleado {
         atencion.setTipo_de_servicio(tipoDeServicio);
         atencion.setId_reserva(idReserva);
         atencion.setEstado_de_atencion(estadoDeAtencion);
-        return controladorEmpleado.RegistrarAtencion(conexion.conexion.getConnection(), atencion);
+        return controladorEmpleado.RegistrarAtencion(conexion.getConnection(), atencion);
     }
     
     @WebMethod(operationName = "RegistrarVenta")
@@ -72,7 +76,7 @@ public class WebServiceEmpleado {
         estadoDeVenta.setIdEstadoDeVenta(idEstadoVenta);
         Ventas venta = new Ventas(idVenta,montoAPagar,montoPagado,fechaVenta,estadoDeVenta,usuarioRut,idAtencion,idDocumento);
         
-        return controladorEmpleado.RegistrarVenta(conexion.conexion.getConnection(), venta);
+        return controladorEmpleado.RegistrarVenta(conexion.getConnection(), venta);
     }
     
     @WebMethod(operationName = "ActualizarProductos")
@@ -83,24 +87,24 @@ public class WebServiceEmpleado {
                                         @WebParam(name = "idProducto") int idProducto) {
      
         ProductoVendido productoVendido = new ProductoVendido(idProductoVendido,cantidad,totalAPagar,idProducto,VentasIdVenta);
-        return controladorEmpleado.ActualizarProductos(conexion.conexion.getConnection(), productoVendido);
+        return controladorEmpleado.ActualizarProductos(conexion.getConnection(), productoVendido);
     }
     
      @WebMethod(operationName = "GetTipoDeProducto")
     public TipoDeProducto[] GetTipoDeProducto() {
         
-        return controladorEmpleado.GetTipoDeProducto(conexion.conexion.getConnection());
+        return controladorEmpleado.GetTipoDeProducto(conexion.getConnection());
     }
     
     @WebMethod(operationName = "GetProductos")
     public Producto[] GetProductos(@WebParam(name = "idTipoDeProducto") int idTipoDeProducto) {
         
-        return controladorEmpleado.GetProductos(conexion.conexion.getConnection(),idTipoDeProducto);
+        return controladorEmpleado.GetProductos(conexion.getConnection(),idTipoDeProducto);
     }
     
     @WebMethod(operationName = "GetTipoDeDocumento")
     public TipoDeDocumento[] GetTipoDeDocumento() {        
-        return controladorEmpleado.GetTipoDeDocumento(conexion.conexion.getConnection());
+        return controladorEmpleado.GetTipoDeDocumento(conexion.getConnection());
     }
     
     @WebMethod (operationName = "GetVentasEmpleado")
@@ -112,6 +116,26 @@ public class WebServiceEmpleado {
     @WebMethod (operationName = "Pagar")
     public String[] Pagar(@WebParam(name = "id_venta")int id_venta, @WebParam(name = "montoPagado") int montoPagado)
     {
-        return controladorEmpleado.Pagar(conexion.conexion.getConnection(),id_venta,montoPagado);
+        return controladorEmpleado.Pagar(conexion.getConnection(),id_venta,montoPagado);
+    }
+    
+    @WebMethod(operationName = "GetInfoUsuario")
+    public Usuario GetInfoUsuario(@WebParam(name = "rut") String rut) {        
+        return controladorEmpleado.GetInfoUsuario(conexion.getConnection(),rut);
+    }
+    
+    @WebMethod(operationName = "GetRegiones")
+    public Region[] GetRegiones(){        
+        return controladorEmpleado.GetRegiones(conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "GetComunas")
+    public Comuna[] GetComunas(@WebParam(name = "idRegion") int idRegion){        
+        return controladorEmpleado.GetComunas(conexion.getConnection(), idRegion);
+    }
+    
+    @WebMethod(operationName = "ActualizarUsuario")
+    public String[] ActualizarUsuario(@WebParam(name = "actualizarUsuario") Usuario actualizarUsuario, @WebParam(name = "rut") String rut, @WebParam(name = "nombreUsuario") String nombreUsuario) {        
+        return controladorEmpleado.ActualizarUsuario(conexion.getConnection(),actualizarUsuario, rut, nombreUsuario);
     }
 }

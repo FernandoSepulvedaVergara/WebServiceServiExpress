@@ -61,8 +61,13 @@ public class WebServiceProveedor {
         return controladorProveedor.RegistrarNuevoProductoProveedor(conexion.conexion.getConnection(),productoProveedor);
     }
     @WebMethod(operationName = "GetOrdenesDePedidoProveedor")
-    public OrdenDePedido[]  GetOrdenesDePedidoProveedor(@WebParam(name = "rutProveedor") String rutProveedor) {
-        return controladorProveedor.GetOrdenesDePedidoProveedor(conexion.conexion.getConnection(),rutProveedor);
+    public OrdenDePedido[]  GetOrdenesDePedidoProveedor(@WebParam(name = "filtroSeleccionarTodosLosPedidos") boolean filtroSeleccionarTodosLosPedidos,
+                                                        @WebParam(name = "filtroBuscar") boolean filtroBuscar,
+                                                        @WebParam(name = "filtroEstado") boolean filtroEstado,
+                                                        @WebParam(name = "tipoDeBusqueda") String tipoDeBusqueda,
+                                                        @WebParam(name = "valorFiltro") String valorFiltro,
+                                                        @WebParam(name = "rutProveedor") String rutProveedor) {
+        return controladorProveedor.GetOrdenesDePedidoProveedor(conexion.conexion.getConnection(),filtroSeleccionarTodosLosPedidos,filtroBuscar,filtroEstado,tipoDeBusqueda,valorFiltro,rutProveedor);
     }
     
     @WebMethod(operationName = "GetOrdenDePedidoProveedor")

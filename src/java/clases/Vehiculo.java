@@ -4,24 +4,27 @@ package clases;
 public class Vehiculo {
     
     private String patente;
-    private int numero_motor;
-    private String numero_chasis;
+    private String marca;
+    private String modelo;
+    private String año;
     private int id_tipo_de_vehiculo;
     private String rut;
     private TipoDeVehiculo tipoDeVehiculo;
 
-    public Vehiculo(String patente, int numero_motor, String numero_chasis, int id_tipo_de_vehiculo, String rut) {
+    public Vehiculo(String patente, String marca, String modelo,String año, int id_tipo_de_vehiculo, String rut) {
         this.patente = patente;
-        this.numero_motor = numero_motor;
-        this.numero_chasis = numero_chasis;
+        this.marca = marca;
+        this.modelo = modelo;
+        this.año = año;
         this.id_tipo_de_vehiculo = id_tipo_de_vehiculo;
         this.rut = rut;
     }
 
     public Vehiculo() {
         this.patente = null;
-        this.numero_motor = 0;
-        this.numero_chasis = null;
+        this.marca = null;
+        this.modelo = null;
+        this.año = null;
         this.id_tipo_de_vehiculo = 0;
         this.rut = null;
         this.tipoDeVehiculo = null;
@@ -42,23 +45,6 @@ public class Vehiculo {
     public void setPatente(String patente) {
         this.patente = patente;
     }
-
-    public int getNumero_motor() {
-        return numero_motor;
-    }
-
-    public void setNumero_motor(int numero_motor) {
-        this.numero_motor = numero_motor;
-    }
-
-    public String getNumero_chasis() {
-        return numero_chasis;
-    }
-
-    public void setNumero_chasis(String numero_chasis) {
-        this.numero_chasis = numero_chasis;
-    }
-
     public int getId_tipo_de_vehiculo() {
         return id_tipo_de_vehiculo;
     }
@@ -73,5 +59,29 @@ public class Vehiculo {
 
     public void setTipoDeVehiculo(TipoDeVehiculo tipoDeVehiculo) {
         this.tipoDeVehiculo = tipoDeVehiculo;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public void setMarca(String marca) {
+        this.marca = marca;
+    }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getAño() {
+        return año;
+    }
+
+    public void setAño(String año) {
+        this.año = año;
     }
 }
