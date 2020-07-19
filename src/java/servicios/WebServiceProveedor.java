@@ -4,6 +4,7 @@ import clases.EstadoDeProducto;
 import clases.OrdenDePedido;
 import clases.Pedidos;
 import clases.ProductoProveedor;
+import clases.Proveedor;
 import clases.TipoDeProducto;
 import controlador.controladorAdministrador;
 import controlador.controladorProveedor;
@@ -92,5 +93,15 @@ public class WebServiceProveedor {
     public String[] ActualizarProductosAprobarPedido(@WebParam(name = "idProductoProveedor") int idProductoProveedor,@WebParam(name = "cantidad") int cantidad) {
         
         return controladorProveedor.ActualizarProductosAprobarPedido(conexion.conexion.getConnection(),idProductoProveedor, cantidad);
+    }
+    
+    @WebMethod(operationName = "GetInfoUsuarioProveedor")
+    public Proveedor GetInfoUsuarioProveedor(@WebParam(name = "rutProveedor") String rutProveedor) {        
+        return controladorProveedor.GetInfoUsuarioProveedor(conexion.conexion.getConnection(),rutProveedor);
+    }
+    
+    @WebMethod(operationName = "ActualizarUsuarioProveedor")
+    public String[] ActualizarUsuarioProveedor(@WebParam(name = "actualizarUsuarioProveedor") Proveedor actualizarUsuarioProveedor,@WebParam(name = "rutProveedor") String rutProveedor,@WebParam(name = "nombreDeUsuario") String nombreDeUsuario) {        
+        return controladorProveedor.ActualizarUsuarioProveedor(conexion.conexion.getConnection(),actualizarUsuarioProveedor,rutProveedor,nombreDeUsuario);
     }
 }

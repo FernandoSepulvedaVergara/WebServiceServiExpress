@@ -42,7 +42,7 @@ public class controladorLogin {
      public static String[] ValidarUsuarioProveedor(Connection cnx,String user, String pass)
     {
         String sql = "select RUT_PROVEEDOR, \"RAZÓN_SOCIAL\", NOMBRE_DE_USUARIO, \"CONSTRASEÑA\" from proveedor "
-                    +"where NOMBRE_DE_USUARIO='"+user+"' and \"CONSTRASEÑA\" = '"+pass+"'";           
+                    +"where NOMBRE_DE_USUARIO='"+user+"' and \"CONSTRASEÑA\" = '"+pass+"' and ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = 1";           
         Statement st = null;
         ResultSet rs = null;
     

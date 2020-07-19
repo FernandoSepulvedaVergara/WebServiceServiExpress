@@ -170,4 +170,24 @@ public class WebServiceAdministrador {
     public String[] RegistrarNuevoUsuario(@WebParam(name = "nuevoUsuario") Usuario nuevoUsuario){        
         return controladorAdministrador.RegistrarNuevoUsuario(conexion.getConnection(),nuevoUsuario);
     }
+    
+    @WebMethod(operationName = "GetGestionarProveedores")
+    public Proveedor[] GetGestionarProveedores(@WebParam(name = "filtroTodosLosProveedores") boolean filtroTodosLosProveedores, @WebParam(name = "filtroRut") boolean filtroRut, @WebParam(name = "valorFiltro") String valorFiltro){        
+        return controladorAdministrador.GetGestionarProveedores(conexion.getConnection(),filtroTodosLosProveedores,filtroRut,valorFiltro);
+    }
+    
+    @WebMethod(operationName = "GetProveedor")
+    public Proveedor GetProveedor(@WebParam(name = "rut") String rut){        
+        return controladorAdministrador.GetProveedor(conexion.getConnection(), rut);
+    }
+    
+    @WebMethod(operationName = "RegistrarNuevoProveedor")
+    public String[] RegistrarNuevoProveedor(@WebParam(name = "nuevoProveedor") Proveedor nuevoProveedor){        
+        return controladorAdministrador.RegistrarNuevoProveedor(conexion.getConnection(), nuevoProveedor);
+    }
+    
+    @WebMethod(operationName = "ActualizarEstadoProveedor")
+    public boolean ActualizarEstadoProveedor(@WebParam(name = "rutProveedor") String rutProveedor,@WebParam(name = "idEstadoDeProveedor") int idEstadoDeProveedor) {        
+        return controladorAdministrador.ActualizarEstadoProveedor(conexion.getConnection(),rutProveedor,idEstadoDeProveedor);
+    }
 }

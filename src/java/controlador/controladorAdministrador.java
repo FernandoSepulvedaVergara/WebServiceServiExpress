@@ -1102,4 +1102,242 @@ public static String[] RegistrarNuevoUsuario(Connection cnx,Usuario nuevoUsuario
         }
         return resultado;
     }
+
+public static Proveedor[] GetGestionarProveedores(Connection cnx,boolean filtroTodosLosProveedores, boolean filtroRut, String valorFiltro){
+        String sql = "select t.TIPO_DE_USUARIO, p.RUT_PROVEEDOR, p.\"RAZÓN_SOCIAL\", p.\"TELÉFONO\", p.EMAIL from proveedor p join TIPO_DE_USUARIO t on (p.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO)"; 
+        String sqlCount = "select count(*) from proveedor p join TIPO_DE_USUARIO t on (p.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO)";
+        
+        if(filtroRut){
+            String sqlFiltroRut = " WHERE p.RUT_PROVEEDOR ='"+valorFiltro+"'";
+            sql = sql + sqlFiltroRut;
+            sqlCount = sqlCount + sqlFiltroRut;
+        }
+        
+        Statement st = null;
+        ResultSet rs = null;
+        Proveedor[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }              
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Proveedor[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Proveedor proveedor = new Proveedor();
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(1));
+                proveedor.setTipoDeUsuario(tipoDeUsuario);
+                proveedor.setRutProveedor(rs.getString(2));
+                proveedor.setRazonSocial(rs.getString(3));
+                proveedor.setTelefono(rs.getInt(4));
+                proveedor.setEmail(rs.getString(5));
+                resultado[count] = proveedor;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado; 
+}
+
+public static Proveedor GetProveedor(Connection cnx, String rut){
+        String sql = "select p.RUT_PROVEEDOR, p.\"RAZÓN_SOCIAL\", p.\"TELÉFONO\", p.EMAIL, p.NOMBRE_DE_USUARIO, p.\"CONSTRASEÑA\", t.TIPO_DE_USUARIO,e.ID_ESTADO_DE_USUARIO, e.ESTADO from PROVEEDOR p join TIPO_DE_USUARIO t on (p.TIPO_DE_USUARIO_ID_TIPO_DE_USUARIO = t.ID_TIPO_DE_USUARIO) join ESTADO_DE_USUARIO e on (p.ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = e.ID_ESTADO_DE_USUARIO) where p.RUT_PROVEEDOR = '"+rut+"'"; 
+       
+        Statement st = null;
+        ResultSet rs = null;
+        Proveedor resultado = new Proveedor();  
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);   
+            
+            int count = 0;
+            while(rs.next()){
+                resultado.setRutProveedor(rs.getString(1));
+                resultado.setRazonSocial(rs.getString(2));
+                resultado.setTelefono(rs.getInt(3));
+                resultado.setEmail(rs.getString(4));
+                resultado.setNombreUsuario(rs.getString(5));
+                resultado.setContraseña(rs.getString(6));
+                    TipoDeUsuario tipoDeUsuario = new TipoDeUsuario();
+                    tipoDeUsuario.setTipoDeUsuario(rs.getString(7));
+                resultado.setTipoDeUsuario(tipoDeUsuario);  
+                    EstadoDeUsuario estadoDeUsuario = new EstadoDeUsuario();
+                    estadoDeUsuario.setIdEstadoDeUsuario(rs.getInt(8));
+                    estadoDeUsuario.setEstadoDeUsuario(rs.getString(9));
+                resultado.setEstadoDeUsuario(estadoDeUsuario);
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }
+
+public static String[] RegistrarNuevoProveedor(Connection cnx,Proveedor nuevoProveedor)
+    {
+        String[] resultado = new String[3];
+        String[] validarNombreUsuarioEmailProveedor = ValidarNombreUsuarioEmailProveedor(cnx,nuevoProveedor.getNombreUsuario(),nuevoProveedor.getEmail(), nuevoProveedor.getRutProveedor());
+        String[] validacionRutProveedor = ValidacionRutProveedor(cnx,nuevoProveedor.getRutProveedor());
+        if(validarNombreUsuarioEmailProveedor[0] == "true"){
+            if(validacionRutProveedor[0] == "true"){
+                try {
+                    PreparedStatement pst = cnx.prepareStatement("insert into proveedor values(?,?,?,?,?,?,?,?)");
+                    pst.setString(1, nuevoProveedor.getRutProveedor());
+                    pst.setString(2, nuevoProveedor.getRazonSocial());
+                    pst.setInt(3, nuevoProveedor.getTelefono());
+                    pst.setString(4, nuevoProveedor.getEmail());
+                    pst.setString(5, nuevoProveedor.getNombreUsuario());
+                    pst.setString(6, nuevoProveedor.getContraseña());
+                    pst.setInt(7, nuevoProveedor.getTipoDeUsuario().getIdTipoDeUsuario());
+                    pst.setInt(8, nuevoProveedor.getEstadoDeUsuario().getIdEstadoDeUsuario());
+                    
+                    pst.execute();
+                    resultado[0] = "true";
+                    resultado[1] = "Proveedor registrado correctamente";
+                } catch (SQLException ex) {
+                    resultado[0] = "false";
+                    resultado[1] = "No se pudo registrar el proveedor";
+                    resultado[2] = ex.getMessage();
+                }     
+            }
+            else if(validacionRutProveedor[0] != "true"){
+                resultado = validacionRutProveedor;
+            }
+        }
+        else if(validarNombreUsuarioEmailProveedor[0] != "true"){
+            resultado = validarNombreUsuarioEmailProveedor;
+        }
+        return resultado;
+    }
+
+private static String[] ValidarNombreUsuarioEmailProveedor(Connection cnx, String nombreUsuario, String email, String rut){
+        String sqlNombreUsuario = "select NOMBRE_DE_USUARIO from proveedor WHERE NOMBRE_DE_USUARIO = '"+nombreUsuario+"'";
+        String sqlEmail = "select email from proveedor WHERE email = '"+email+"'";
+        
+        String sqlValidacionNombreUsuarioRut = "select NOMBRE_DE_USUARIO from proveedor WHERE NOMBRE_DE_USUARIO = '"+nombreUsuario+"' and rut_proveedor = '"+rut+"'";
+        String sqlValidacionEmailRut = "select email from proveedor WHERE email = '"+email+"' and rut_proveedor = '"+rut+"'";
+        
+        Statement st = null;
+        ResultSet rs = null;
+        String[] resultado = new String[2];   
+        resultado[0] = "false";
+        try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlValidacionNombreUsuarioRut);
+
+            while (rs.next()) {
+                resultado[0] = "true";    
+            }  
+            
+            if(resultado[0] != "true"){
+            resultado[0] = "true";
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlNombreUsuario);
+                
+            while (rs.next()) {
+                resultado[0] = "false";
+                resultado[1] = "Nombre de usuario ya esta registrado";
+            }
+            if(resultado[0] != "false"){
+                resultado[0] = "true";
+            }
+        }   
+        }         
+        catch (SQLException d) {
+            resultado[0] = "false";
+            resultado[1] = "Error validación nombre de usuario";
+        }
+        
+            if(resultado[0] != "true"){
+                return resultado;
+            }
+            else if(resultado[0] == "true"){
+            resultado[0] = "false";
+            try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlValidacionEmailRut);
+
+                while (rs.next()) {
+                    resultado[0] = "true";    
+                }  
+            
+            if(resultado[0] != "true"){
+            resultado[0] = "true";
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlEmail);
+                
+                while (rs.next()) {
+                    resultado[0] = "false";
+                    resultado[1] = "Email ya esta registrado";
+                }
+                if(resultado[0] != "false"){
+                    resultado[0] = "true";
+                }
+            }   
+        }         
+            catch (SQLException d) {
+                resultado[0] = "false";
+                resultado[1] = "Error validación email";
+            }
+        }
+        return resultado;    
+    }
+   
+  private static String[] ValidacionRutProveedor(Connection cnx,String rut){
+       String sqlRut = "select rut_proveedor from proveedor WHERE rut_proveedor = '"+rut+"'";
+       
+        Statement st = null;
+        ResultSet rs = null;
+        String[] resultado = new String[2]; 
+        resultado[0] = "true";
+     try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlRut);
+            while (rs.next()) {
+                resultado[0] = "false";
+                resultado[1] = "Rut ya esta registrado";
+            }
+            if(resultado[0] !="false"){
+                resultado[0] = "true";
+            }
+            
+        } catch (SQLException d) {
+            resultado[0] = "false";
+            resultado[1] = "Error validación nombre de usuario";
+        }
+     return resultado;
+   }
+  
+  public static boolean ActualizarEstadoProveedor(Connection cnx,String rutProveedor, int idEstadoDeProveedor)
+    {
+        boolean resultado = false;
+        try {
+            PreparedStatement pst = cnx.prepareStatement("update PROVEEDOR set ESTADO_DE_USUARIO_ID_ESTADO_DE_USUARIO = "+idEstadoDeProveedor+" where rut_proveedor = '"+rutProveedor+"'");
+            pst.execute();
+            resultado = true;
+        } catch (SQLException ex) {
+            resultado = false;
+        }        
+        return resultado;
+    }   
 }

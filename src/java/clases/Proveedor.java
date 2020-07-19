@@ -8,9 +8,10 @@ public class Proveedor {
     private String email;
     private String nombreUsuario;
     private String contraseña;
-    private int tipoDeUsuario;
+    private TipoDeUsuario tipoDeUsuario;
+    private EstadoDeUsuario estadoDeUsuario;
 
-    public Proveedor(String rutProveedor, String razonSocial, int telefono, String email, String nombreUsuario, String contraseña, int tipoDeUsuario) {
+    public Proveedor(String rutProveedor, String razonSocial, int telefono, String email, String nombreUsuario, String contraseña, TipoDeUsuario tipoDeUsuario, EstadoDeUsuario estadoDeUsuario) {
         this.rutProveedor = rutProveedor;
         this.razonSocial = razonSocial;
         this.telefono = telefono;
@@ -18,6 +19,7 @@ public class Proveedor {
         this.nombreUsuario = nombreUsuario;
         this.contraseña = contraseña;
         this.tipoDeUsuario = tipoDeUsuario;
+        this.estadoDeUsuario = estadoDeUsuario;
     }
 
     public Proveedor() {
@@ -27,7 +29,8 @@ public class Proveedor {
         this.email = null;
         this.nombreUsuario = null;
         this.contraseña = null;
-        this.tipoDeUsuario = 2;        
+        this.tipoDeUsuario = null; 
+        this.estadoDeUsuario = null;
     }
 
     public String getRutProveedor() {
@@ -78,13 +81,19 @@ public class Proveedor {
         this.contraseña = contraseña;
     }
 
-    public int getTipoDeUsuario() {
+    public TipoDeUsuario getTipoDeUsuario() {
         return tipoDeUsuario;
     }
 
-    public void setTipoDeUsuario(int tipoDeUsuario) {
+    public void setTipoDeUsuario(TipoDeUsuario tipoDeUsuario) {
         this.tipoDeUsuario = tipoDeUsuario;
     }
-    
-    
+
+    public EstadoDeUsuario getEstadoDeUsuario() {
+        return estadoDeUsuario;
+    }
+
+    public void setEstadoDeUsuario(EstadoDeUsuario estadoDeUsuario) {
+        this.estadoDeUsuario = estadoDeUsuario;
+    }
 }
