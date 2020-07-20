@@ -665,4 +665,19 @@ public class controladorCliente {
         }
         return resultado;    
     }
+    
+    public static String[] EliminarVehiculo(Connection cnx,String patente,String rut)
+    {
+        String[] resultado = new String[2];
+        try {
+            PreparedStatement pst = cnx.prepareStatement("delete from \"VEHÍCULO\" where PATENTE = '"+patente+"' and USUARIO_RUT = '"+rut+"'");
+            pst.execute();
+            resultado[0] = "true";
+            resultado[1] = "El vehículo ha sido eliminado";
+        } catch (SQLException ex) {
+            resultado[0] = "false";
+            resultado[1] = "Ha ocurrido un error al eliminar el vehículo";
+        }        
+        return resultado;
+    }  
 }

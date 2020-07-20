@@ -149,4 +149,9 @@ public class WebServiceCliente {
     public String[] ActualizarUsuario(@WebParam(name = "actualizarUsuario") Usuario actualizarUsuario, @WebParam(name = "rut") String rut, @WebParam(name = "nombreUsuario") String nombreUsuario) {        
         return controlador.controladorCliente.ActualizarUsuario(conexion.getConnection(),actualizarUsuario, rut, nombreUsuario);
     }
+    
+    @WebMethod(operationName = "EliminarVehiculo")
+    public String[] EliminarVehiculo(@WebParam(name = "patente") String patente,@WebParam(name = "rut") String rut) {        
+        return controlador.controladorCliente.EliminarVehiculo(conexion.getConnection(),patente,rut);
+    }
 }
