@@ -15,6 +15,7 @@ import clases.Usuario;
 import clases.Usuarios;
 import clases.Comuna;
 import clases.Region;
+import clases.Sucursal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -1339,5 +1340,82 @@ private static String[] ValidarNombreUsuarioEmailProveedor(Connection cnx, Strin
             resultado = false;
         }        
         return resultado;
-    }   
+    }
+
+  public static Sucursal[] GetSucursales(Connection cnx){
+    String sql = "select * from SUCURSAL"; 
+        String sqlCount = "select count(*) from SUCURSAL";
+        Statement st = null;
+        ResultSet rs = null;
+        Sucursal[] resultado = null;
+        int indiceArray=0;        
+        
+        try{
+            st = cnx.createStatement();
+            rs = st.executeQuery(sqlCount);
+            
+            while(rs.next()){
+            indiceArray = rs.getInt(1);
+                }
+            }
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener cantidad de filas \n" + e.getMessage());
+        }        
+    try {
+            st = cnx.createStatement();
+            rs = st.executeQuery(sql);                  
+            resultado = new Sucursal[indiceArray];
+            
+            int count = 0;
+            while(rs.next()){
+                Sucursal sucursal = new Sucursal();                
+                sucursal.setId_sucursal(rs.getInt(1));
+                sucursal.setSucursal(rs.getString(2)); 
+                sucursal.setDireccion(rs.getString(3)); 
+                resultado[count] = sucursal;
+                count = count + 1;                
+            }
+            return resultado;
+        }  
+        catch (SQLException e) 
+        {
+            System.out.println("Error al obtener datos \n" + e.getMessage());
+        }
+    return resultado;
+    }  
+  
+  public static String[] AgregarSucursal(Connection cnx, Sucursal sucursal){
+  
+      String[] resultado = new String[2];
+      try {
+            PreparedStatement pst = cnx.prepareStatement("insert into SUCURSAL VALUES(secuencia_id_sucursales.nextval, ?,?)");
+            pst.setString(1, sucursal.getSucursal());
+            pst.setString(2, sucursal.getDireccion());
+
+            pst.execute();
+            resultado[0] = "true";
+            resultado[1] = "Sucursal registrada correctamente";
+        } catch (SQLException ex) {
+            resultado[0] = "false";
+            resultado[1] = "No se pudo registrar la sucursal";
+        }
+      return resultado;
+    }
+  
+  public static String[] EliminarSucursal(Connection cnx, int idSucursal){
+  
+      String[] resultado = new String[2];
+      try {
+            PreparedStatement pst = cnx.prepareStatement("delete from SUCURSAL where ID_SUCURSAL = "+idSucursal);
+
+            pst.execute();
+            resultado[0] = "true";
+            resultado[1] = "Sucursal se ha eliminado correctamente";
+        } catch (SQLException ex) {
+            resultado[0] = "false";
+            resultado[1] = "No se pudo eliminar la sucursal";
+        }
+      return resultado;
+    }
 }

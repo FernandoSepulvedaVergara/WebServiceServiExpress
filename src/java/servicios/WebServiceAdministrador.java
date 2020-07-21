@@ -9,6 +9,7 @@ import clases.Producto;
 import clases.ProductoProveedor;
 import clases.Proveedor;
 import clases.Region;
+import clases.Sucursal;
 import clases.TipoDeProducto;
 import clases.TipoDeUsuario;
 import clases.Usuario;
@@ -189,5 +190,20 @@ public class WebServiceAdministrador {
     @WebMethod(operationName = "ActualizarEstadoProveedor")
     public boolean ActualizarEstadoProveedor(@WebParam(name = "rutProveedor") String rutProveedor,@WebParam(name = "idEstadoDeProveedor") int idEstadoDeProveedor) {        
         return controladorAdministrador.ActualizarEstadoProveedor(conexion.getConnection(),rutProveedor,idEstadoDeProveedor);
+    }
+    
+    @WebMethod(operationName = "GetSucursales")
+    public Sucursal[] GetSucursales() {        
+        return controladorAdministrador.GetSucursales(conexion.getConnection());
+    }
+    
+    @WebMethod(operationName = "AgregarSucursal")
+    public String[] AgregarSucursal(@WebParam(name = "sucursal") Sucursal sucursal) {        
+        return controladorAdministrador.AgregarSucursal(conexion.getConnection(), sucursal);
+    }
+    
+    @WebMethod(operationName = "EliminarSucursal")
+    public String[] EliminarSucursal(@WebParam(name = "idSucursal") int idSucursal) {        
+        return controladorAdministrador.EliminarSucursal(conexion.getConnection(), idSucursal);
     }
 }
