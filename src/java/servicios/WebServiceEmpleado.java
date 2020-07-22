@@ -23,11 +23,10 @@ import controlador.controladorEmpleado;
 public class WebServiceEmpleado {
 
     @WebMethod(operationName = "GetAtenciones")
-    public Atenciones[] GetAtenciones(@WebParam(name = "id_sucursal") String id_sucursal, 
-                                      @WebParam(name = "filtro") String filtro,
+    public Atenciones[] GetAtenciones(                                      @WebParam(name = "filtro") String filtro,
                                       @WebParam(name = "valorFiltro") String valorFiltro) {
         
-        return controladorEmpleado.GetAtenciones(id_sucursal, filtro, valorFiltro);
+        return controladorEmpleado.GetAtenciones( filtro, valorFiltro);
     }
     
     @WebMethod(operationName = "GetTipoDeServicios")

@@ -26,7 +26,7 @@ import java.sql.Statement;
 
 public class controladorEmpleado {
 
-    public static Atenciones[] GetAtenciones(String id_sucursal, String filtro, String valorFiltro)
+    public static Atenciones[] GetAtenciones( String filtro, String valorFiltro)
     {   
         String sql;
         String sqlCount;
@@ -35,50 +35,50 @@ public class controladorEmpleado {
         if(filtro.equals("Fecha"))
         {
             sql = "select a.ID_ATENCION,r.HORA_RESERVA, r.FECHA_RESERVA,r.USUARIO_RUT,r.PATENTE, r.ID_RESERVA,s.SUCURSAL,a.ESTADO_DE_ATENCIÓN_ID_ESTADO_DE_ATENCIÓN from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                + "where r.FECHA_RESERVA='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                + "where r.FECHA_RESERVA='"+valorFiltro+"'";
             
             sqlCount = "select count(*) from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                     + "where r.FECHA_RESERVA='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                     + "where r.FECHA_RESERVA='"+valorFiltro+"'";
             
             atenciones = GetAtenciones(conexion.getConnection(),atenciones, sql, sqlCount);
         }
         else if(filtro.equals("Rut"))
         {
             sql = "select a.ID_ATENCION,r.HORA_RESERVA, r.FECHA_RESERVA,r.USUARIO_RUT,r.PATENTE, r.ID_RESERVA,s.SUCURSAL,a.ESTADO_DE_ATENCIÓN_ID_ESTADO_DE_ATENCIÓN from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                + "where r.USUARIO_RUT='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                + "where r.USUARIO_RUT='"+valorFiltro+"'";
             
             sqlCount = "select count(*) from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                     + "where r.USUARIO_RUT='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                     + "where r.USUARIO_RUT='"+valorFiltro+"'";
             
             atenciones = GetAtenciones(conexion.getConnection(),atenciones, sql, sqlCount);
         }
         else if(filtro.equals("Patente"))
         {
             sql = "select a.ID_ATENCION,r.HORA_RESERVA, r.FECHA_RESERVA,r.USUARIO_RUT,r.PATENTE, r.ID_RESERVA,s.SUCURSAL,a.ESTADO_DE_ATENCIÓN_ID_ESTADO_DE_ATENCIÓN from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                + "where r.PATENTE='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                + "where r.PATENTE='"+valorFiltro+"'";
             
             sqlCount = "select count(*) from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                     + "where r.PATENTE='"+valorFiltro+"' and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                     + "where r.PATENTE='"+valorFiltro+"'";
             
             atenciones = GetAtenciones(conexion.getConnection(),atenciones, sql, sqlCount);
         }
         else if(filtro.equals("Id reservación"))
         {
             sql = "select a.ID_ATENCION,r.HORA_RESERVA, r.FECHA_RESERVA,r.USUARIO_RUT,r.PATENTE, r.ID_RESERVA,s.SUCURSAL,a.ESTADO_DE_ATENCIÓN_ID_ESTADO_DE_ATENCIÓN from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                + "where r.ID_RESERVA="+valorFiltro+" and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                + "where r.ID_RESERVA="+valorFiltro+"'";
             
             sqlCount = "select count(*) from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                     + "where r.ID_RESERVA="+valorFiltro+" and r.SUCURSAL_ID_SUCURSAL="+id_sucursal;
+                     + "where r.ID_RESERVA="+valorFiltro+"'";
             
             atenciones = GetAtenciones(conexion.getConnection(),atenciones, sql, sqlCount);
         }
         else if(filtro.equals("Sucursal"))
         {
             sql = "select a.ID_ATENCION,r.HORA_RESERVA, r.FECHA_RESERVA,r.USUARIO_RUT,r.PATENTE, r.ID_RESERVA,s.SUCURSAL,a.ESTADO_DE_ATENCIÓN_ID_ESTADO_DE_ATENCIÓN from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                + "where r.SUCURSAL_ID_SUCURSAL="+valorFiltro;
+                + "where r.SUCURSAL_ID_SUCURSAL="+valorFiltro+"'";
             
             sqlCount = "select count(*) from atenciones a right join reserva_de_hora r on (a.RESERVA_DE_HORA_ID_RESERVA = r.ID_RESERVA) join sucursal s on (r.SUCURSAL_ID_SUCURSAL = s.ID_SUCURSAL) "
-                     + "where r.SUCURSAL_ID_SUCURSAL="+valorFiltro;
+                     + "where r.SUCURSAL_ID_SUCURSAL="+valorFiltro+"'";
             
             atenciones = GetAtenciones(conexion.getConnection(),atenciones, sql, sqlCount);
         }
